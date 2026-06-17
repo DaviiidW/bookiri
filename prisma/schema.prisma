@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+
+  createdAt    DateTime @default(now())
+  deletedAt    DateTime?
+
+  properties   Property[]
+}
+
+model Property {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  color     String
+  maxGuests Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  availabilityPeriods PropertyAvailabilityPeriod[]
+  seasons             Season[]
+  bookings            Booking[]
+
+  sharedCalendars SharedCalendarProperty[]
+}
+
+model PropertyAvailabilityPeriod {
+  id         String   @id @default(cuid())
+  propertyId String
+
+  startDate  DateTime
+  endDate    DateTime
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model Season {
+  id         String   @id @default(cuid())
+  propertyId String
+
+  name       String
+  color      String
+
+  startDate  DateTime
+  endDate    DateTime
+
+  pricePerNight        Float
+  minimumStayNights    Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  bookingSegments BookingPriceSegment[]
+  sharedCalendarPrices SharedCalendarSeasonPrice[]
+}
+
+model Booking {
+  id         String   @id @default(cuid())
+  propertyId String
+
+  guestName  String
+
+  guestsTotal Int
+  adults      Int
+  children    Int
+
+  checkInDate  DateTime
+  checkOutDate DateTime
+
+  checkInTime  String?
+  checkOutTime String?
+
+  totalPrice   Float
+
+  depositAmount Float
+  depositPaid   Boolean @default(false)
+  depositPaidAt DateTime?
+
+  fullyPaid     Boolean @default(false)
+  fullyPaidAt   DateTime?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  priceSegments BookingPriceSegment[]
+}
+
+model BookingPriceSegment {
+  id        String @id @default(cuid())
+
+  bookingId String
+  seasonId  String
+
+  startDate DateTime
+  endDate   DateTime
+
+  pricePerNight Float
+
+  nights   Int
+  subtotal Float
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  season  Season  @relation(fields: [seasonId], references: [id], onDelete: Restrict)
+}
+
+model SharedCalendar {
+  id        String @id @default(cuid())
+
+  token     String @unique
+
+  name      String?
+
+  expiresAt DateTime?
+  isActive  Boolean @default(true)
+
+  viewType  SharedCalendarViewType
+
+  createdAt DateTime @default(now())
+
+  properties SharedCalendarProperty[]
+  seasonPrices SharedCalendarSeasonPrice[]
+}
+
+model SharedCalendarProperty {
+  sharedCalendarId String
+  propertyId       String
+
+  sharedCalendar SharedCalendar @relation(fields: [sharedCalendarId], references: [id], onDelete: Cascade)
+  property       Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@id([sharedCalendarId, propertyId])
+}
+
+model SharedCalendarSeasonPrice {
+  id String @id @default(cuid())
+
+  sharedCalendarId String
+  seasonId         String
+
+  publicPricePerNight Float
+
+  sharedCalendar SharedCalendar @relation(fields: [sharedCalendarId], references: [id], onDelete: Cascade)
+  season         Season         @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+}
+
+enum SharedCalendarViewType {
+  MONTH
+  WEEK
+  LIST
+  AVAILABILITY
+}
