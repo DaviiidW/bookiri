@@ -55,34 +55,7 @@ export default function DashboardClient({ session }: DashboardClientProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      <header className="border-b border-slate-900 bg-slate-900/40 backdrop-blur-md sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-              Bookiri
-            </span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-800/40 text-indigo-400 font-semibold uppercase tracking-wider">
-              Admin
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs text-slate-400">Sesión iniciada como</p>
-              <p className="text-sm font-semibold text-slate-200">{session.user.email}</p>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-xs font-semibold bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg transition-colors cursor-pointer"
-            >
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-12">
+    <div className="max-w-4xl w-full mx-auto">
         <div className="mb-10">
           <h1 className="text-3xl font-extrabold tracking-tight text-white">
             Panel de Control
@@ -134,7 +107,7 @@ export default function DashboardClient({ session }: DashboardClientProps) {
             </div>
           </div>
         </section>
-      </main>
+
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
