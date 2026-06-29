@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -39,7 +40,19 @@ export default function RegisterForm() {
       const data = await response.json();
 
       if (response.ok) {
-        router.push("/login?registered=true");
+        // Automatically sign in the user after registration
+        const result = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          router.push("/login?registered=true");
+        } else {
+          router.push("/dashboard/calendario");
+          router.refresh();
+        }
       } else {
         setError(data.error || "Ocurrió un error al registrar la cuenta.");
       }

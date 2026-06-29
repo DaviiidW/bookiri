@@ -13,13 +13,13 @@ export const authConfig = {
       if (isOnDashboard || isOnRoot) {
         if (isLoggedIn) {
           if (isOnRoot) {
-            return Response.redirect(new URL("/dashboard", nextUrl));
+            return Response.redirect(new URL("/dashboard/calendario", nextUrl));
           }
           return true;
         }
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn && nextUrl.pathname === "/login") {
-        return Response.redirect(new URL("/dashboard", nextUrl));
+        return Response.redirect(new URL("/dashboard/calendario", nextUrl));
       }
       return true;
     },

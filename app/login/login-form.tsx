@@ -29,7 +29,7 @@ export default function LoginForm() {
       if (result?.error) {
         setError("Correo o contraseña incorrectos");
       } else {
-        router.push("/dashboard");
+        router.push("/dashboard/calendario");
         router.refresh();
       }
     } catch (err) {
