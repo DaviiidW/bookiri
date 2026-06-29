@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 
-/**
- * DELETE /api/account
- * Performs a soft delete on the logged-in user's account.
- */
+
 export async function DELETE() {
   const session = await auth();
 
@@ -17,7 +14,6 @@ export async function DELETE() {
   }
 
   try {
-    // Perform soft delete
     await db.user.update({
       where: { id: session.user.id },
       data: { deletedAt: new Date() },

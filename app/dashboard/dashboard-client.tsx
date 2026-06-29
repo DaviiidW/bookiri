@@ -42,7 +42,6 @@ export default function DashboardClient({ session }: DashboardClientProps) {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Log out immediately to destroy client cookies and session
         await signOut({ callbackUrl: "/login" });
       } else {
         setDeleteError(data.error || "No se pudo eliminar la cuenta.");
@@ -57,7 +56,6 @@ export default function DashboardClient({ session }: DashboardClientProps) {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* Header */}
       <header className="border-b border-slate-900 bg-slate-900/40 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -84,7 +82,6 @@ export default function DashboardClient({ session }: DashboardClientProps) {
         </div>
       </header>
 
-      {/* Main Workspace */}
       <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-12">
         <div className="mb-10">
           <h1 className="text-3xl font-extrabold tracking-tight text-white">
@@ -95,7 +92,6 @@ export default function DashboardClient({ session }: DashboardClientProps) {
           </p>
         </div>
 
-        {/* Account Settings Card */}
         <section className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 md:p-8 shadow-xl">
           <div className="border-b border-slate-800/80 pb-6 mb-6">
             <h2 className="text-xl font-bold text-white">Gestión de la Cuenta</h2>
@@ -105,7 +101,6 @@ export default function DashboardClient({ session }: DashboardClientProps) {
           </div>
 
           <div className="space-y-6">
-            {/* User Info Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
@@ -125,7 +120,6 @@ export default function DashboardClient({ session }: DashboardClientProps) {
               </div>
             </div>
 
-            {/* Danger Zone */}
             <div className="border-t border-slate-850 pt-8 mt-6">
               <h3 className="text-md font-bold text-red-400 mb-2">Zona de Peligro</h3>
               <p className="text-xs text-slate-400 mb-4 leading-relaxed">
@@ -142,7 +136,6 @@ export default function DashboardClient({ session }: DashboardClientProps) {
         </section>
       </main>
 
-      {/* Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl relative">
