@@ -16,11 +16,12 @@ interface AffectedBooking {
   checkInDate: string;
   checkOutDate: string;
   propertyName: string;
+  type?: "total" | "parcial";
 }
 
 interface BookingDecision {
   bookingId: string;
-  action: "keep" | "delete" | "edit";
+  action: "keep" | "delete";
   checkInDate: string;
   checkOutDate: string;
 }
@@ -54,7 +55,7 @@ export default function ConflictResolutionModal({
 
         initialDecisions[b.id] = {
           bookingId: b.id,
-          action: "keep",
+          action: "delete",
           checkInDate: formatInputDate(b.checkInDate),
           checkOutDate: formatInputDate(b.checkOutDate),
         };
@@ -65,22 +66,12 @@ export default function ConflictResolutionModal({
 
   if (!isOpen) return null;
 
-  const handleActionChange = (bookingId: string, action: "keep" | "delete" | "edit") => {
+  const handleActionChange = (bookingId: string, action: "keep" | "delete") => {
     setDecisions(prev => ({
       ...prev,
       [bookingId]: {
         ...prev[bookingId],
         action,
-      },
-    }));
-  };
-
-  const handleDateChange = (bookingId: string, field: "checkInDate" | "checkOutDate", value: string) => {
-    setDecisions(prev => ({
-      ...prev,
-      [bookingId]: {
-        ...prev[bookingId],
-        [field]: value,
       },
     }));
   };
@@ -129,19 +120,6 @@ export default function ConflictResolutionModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const hasInvalidEdits = Object.values(decisions).some(d => {
-      if (d.action === "edit") {
-        return !isRangeCovered(d.checkInDate, d.checkOutDate);
-      }
-      return false;
-    });
-
-    if (hasInvalidEdits) {
-      alert("Por favor, asegúrate de que las reservas editadas queden totalmente dentro de los periodos de disponibilidad configurados.");
-      return;
-    }
-
     onConfirm(Object.values(decisions));
   };
 
@@ -180,9 +158,7 @@ export default function ConflictResolutionModal({
               const decision = decisions[booking.id];
               if (!decision) return null;
 
-              const isEditedValid = decision.action === "edit" 
-                ? isRangeCovered(decision.checkInDate, decision.checkOutDate)
-                : true;
+              const isTotal = booking.type === "total";
 
               return (
                 <div
@@ -190,21 +166,29 @@ export default function ConflictResolutionModal({
                   className={`p-4 border rounded-2xl transition-all duration-200 bg-slate-950/30 flex flex-col gap-4 ${
                     decision.action === "delete"
                       ? "border-red-900/50 bg-red-950/5"
-                      : decision.action === "edit"
-                      ? isEditedValid
-                        ? "border-indigo-900/50 bg-indigo-950/5"
-                        : "border-amber-900/50 bg-amber-950/5"
                       : "border-slate-850"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
                       <p className="font-bold text-sm text-slate-200">{booking.guestName}</p>
-                      <div className="flex items-center gap-1.5 text-slate-450 text-xs mt-0.5">
-                        <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                        <span>
-                          Original: {formatDate(booking.checkInDate)} al {formatDate(booking.checkOutDate)}
+                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                        <span className="flex items-center gap-1.5 text-slate-450 text-xs">
+                          <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                          <span>
+                            Original: {formatDate(booking.checkInDate)} al {formatDate(booking.checkOutDate)}
+                          </span>
                         </span>
+                        <span className="text-slate-650">·</span>
+                        {isTotal ? (
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-red-950/40 text-red-400 border border-red-900/30">
+                            AFECTACIÓN TOTAL
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-950/30 text-amber-400 border border-amber-900/20">
+                            AFECTACIÓN PARCIAL
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -222,18 +206,6 @@ export default function ConflictResolutionModal({
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleActionChange(booking.id, "edit")}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
-                          decision.action === "edit"
-                            ? "bg-indigo-950/80 border border-indigo-850 text-indigo-400"
-                            : "text-slate-450 hover:text-slate-200"
-                        }`}
-                      >
-                        <Edit2 className="w-3 h-3" />
-                        Editar
-                      </button>
-                      <button
-                        type="button"
                         onClick={() => handleActionChange(booking.id, "delete")}
                         className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                           decision.action === "delete"
@@ -241,56 +213,11 @@ export default function ConflictResolutionModal({
                             : "text-slate-450 hover:text-red-400"
                         }`}
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-3.5 h-3.5" />
                         Eliminar
                       </button>
                     </div>
                   </div>
-
-                  {decision.action === "edit" && (
-                    <div className="p-3 border border-slate-850 rounded-xl bg-slate-950/50 space-y-3">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-450 mb-1">
-                            Nueva Entrada
-                          </label>
-                          <input
-                            type="date"
-                            required
-                            value={decision.checkInDate}
-                            onChange={(e) => handleDateChange(booking.id, "checkInDate", e.target.value)}
-                            className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-450 mb-1">
-                            Nueva Salida
-                          </label>
-                          <input
-                            type="date"
-                            required
-                            value={decision.checkOutDate}
-                            onChange={(e) => handleDateChange(booking.id, "checkOutDate", e.target.value)}
-                            className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 text-[10px]">
-                        {isEditedValid ? (
-                          <div className="text-emerald-400 flex items-center gap-1">
-                            <Check className="w-3.5 h-3.5" />
-                            <span>Fechas disponibles y válidas.</span>
-                          </div>
-                        ) : (
-                          <div className="text-amber-400 flex items-center gap-1">
-                            <AlertCircle className="w-3.5 h-3.5" />
-                            <span>¡Atención! Las fechas aún quedan fuera de los rangos de disponibilidad.</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
 
                   {decision.action === "delete" && (
                     <p className="text-[10px] text-red-400 italic">

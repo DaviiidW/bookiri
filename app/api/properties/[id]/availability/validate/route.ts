@@ -114,7 +114,8 @@ export async function POST(
       const bStart = toMidnightUTC(booking.checkInDate);
       const bEnd = toMidnightUTC(booking.checkOutDate);
 
-      let isCovered = true;
+      const totalNights = Math.round((bEnd.getTime() - bStart.getTime()) / (1000 * 60 * 60 * 24));
+      let coveredNights = 0;
 
       for (let day = new Date(bStart); day < bEnd; day.setUTCDate(day.getUTCDate() + 1)) {
         const currentNight = day.getTime();
@@ -122,19 +123,19 @@ export async function POST(
           return currentNight >= p.start.getTime() && currentNight < p.end.getTime();
         });
 
-        if (!nightIsAvailable) {
-          isCovered = false;
-          break;
+        if (nightIsAvailable) {
+          coveredNights++;
         }
       }
 
-      if (!isCovered) {
+      if (coveredNights < totalNights) {
         affectedBookings.push({
           id: booking.id,
           guestName: booking.guestName,
           checkInDate: booking.checkInDate,
           checkOutDate: booking.checkOutDate,
           propertyName: property.name,
+          type: coveredNights === 0 ? "total" : "parcial",
         });
       }
     }

@@ -30,11 +30,12 @@ interface AffectedBooking {
   checkInDate: string;
   checkOutDate: string;
   propertyName: string;
+  type?: "total" | "parcial";
 }
 
 interface BookingDecision {
   bookingId: string;
-  action: "keep" | "delete" | "edit";
+  action: "keep" | "delete";
   checkInDate: string;
   checkOutDate: string;
 }

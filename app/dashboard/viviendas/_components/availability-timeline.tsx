@@ -77,9 +77,6 @@ export default function AvailabilityTimeline({
                   <h4 className="font-bold text-sm text-slate-100">
                     {period.description?.trim() || "Periodo de disponibilidad"}
                   </h4>
-                  <span className="px-2 py-0.5 text-[10px] font-bold text-indigo-400 bg-indigo-950/60 border border-indigo-900/40 rounded-full">
-                    {nights} {nights === 1 ? "noche" : "noches"}
-                  </span>
                 </div>
 
                 <div className="flex items-center gap-2 text-slate-400 text-xs">
