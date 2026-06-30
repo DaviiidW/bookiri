@@ -14,9 +14,10 @@ import {
 interface GanttViewProps {
   currentDate: Date;
   properties: CalendarProperty[];
+  onSelectBooking?: (booking: CalendarBooking) => void;
 }
 
-export default function GanttView({ currentDate, properties }: GanttViewProps) {
+export default function GanttView({ currentDate, properties, onSelectBooking }: GanttViewProps) {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const days = useMemo(() => getDaysInMonth(year, month), [year, month]);
@@ -103,10 +104,10 @@ export default function GanttView({ currentDate, properties }: GanttViewProps) {
                     const firstDay = toMidnightMs(days[0]);
                     const lastDay = toMidnightMs(days[days.length - 1]);
 
-                    if (checkOut <= firstDay || checkIn > lastDay) return null;
+                    if (checkOut < firstDay || checkIn > lastDay) return null;
 
                     const clampedStart = Math.max(checkIn, firstDay);
-                    const clampedEnd = Math.min(checkOut, lastDay + 86400000);
+                    const clampedEnd = Math.min(checkOut + 86400000, lastDay + 86400000);
 
                     const startDayIndex = days.findIndex(
                       (d) => toMidnightMs(d) === clampedStart
@@ -122,7 +123,7 @@ export default function GanttView({ currentDate, properties }: GanttViewProps) {
                     return (
                       <div
                         key={booking.id}
-                        className="absolute top-1.5 bottom-1.5 rounded-md flex items-center px-2 overflow-hidden pointer-events-auto"
+                        className="absolute top-1.5 bottom-1.5 rounded-md flex items-center px-2 overflow-hidden pointer-events-auto cursor-pointer hover:scale-[1.02] transition-transform"
                         style={{
                           left: `${leftPct}%`,
                           width: `${widthPct}%`,
@@ -130,6 +131,7 @@ export default function GanttView({ currentDate, properties }: GanttViewProps) {
                           border: `1px solid ${property.color}80`,
                         }}
                         title={`${booking.guestName} · ${formatShortDate(booking.checkInDate)} – ${formatShortDate(booking.checkOutDate)} (${getNights(booking.checkInDate, booking.checkOutDate)} noches)`}
+                        onClick={() => onSelectBooking?.(booking)}
                       >
                         <span
                           className="text-[9px] font-semibold truncate"

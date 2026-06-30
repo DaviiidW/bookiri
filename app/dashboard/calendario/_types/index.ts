@@ -1,5 +1,3 @@
-// Tipos compartidos del módulo de Calendario
-
 export type CalendarView = "month" | "gantt" | "list";
 
 export interface CalendarAvailabilityPeriod {
@@ -45,7 +43,7 @@ export function getBookingsForDay(date: Date, bookings: CalendarBooking[]): Cale
   return bookings.filter((b) => {
     const start = toMidnightMs(new Date(b.checkInDate));
     const end = toMidnightMs(new Date(b.checkOutDate));
-    return dayMs >= start && dayMs < end;
+    return dayMs >= start && dayMs <= end;
   });
 }
 

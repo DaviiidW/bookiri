@@ -7,6 +7,7 @@ import { Calendar, User, ArrowRight, Home } from "lucide-react";
 interface ListViewProps {
   currentDate: Date;
   properties: CalendarProperty[];
+  onSelectBooking?: (booking: CalendarBooking) => void;
 }
 
 interface GroupedMonth {
@@ -14,7 +15,7 @@ interface GroupedMonth {
   bookings: (CalendarBooking & { nights: number })[];
 }
 
-export default function ListView({ currentDate, properties }: ListViewProps) {
+export default function ListView({ currentDate, properties, onSelectBooking }: ListViewProps) {
   const today = useMemo(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -96,7 +97,8 @@ export default function ListView({ currentDate, properties }: ListViewProps) {
                   return (
                     <tr
                       key={booking.id}
-                      className={`hover:bg-slate-900/30 transition-colors ${isActive ? "bg-indigo-950/10" : ""}`}
+                      className={`hover:bg-slate-900/30 transition-colors cursor-pointer ${isActive ? "bg-indigo-950/10" : ""}`}
+                      onClick={() => onSelectBooking?.(booking)}
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
@@ -107,11 +109,6 @@ export default function ListView({ currentDate, properties }: ListViewProps) {
                           <span className="font-medium text-slate-300 truncate max-w-[120px]">
                             {booking.propertyName}
                           </span>
-                          {isActive && (
-                            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-950/50 text-indigo-400 border border-indigo-900/50">
-                              Hoy
-                            </span>
-                          )}
                         </div>
                       </td>
                       <td className="px-4 py-3 font-medium text-slate-200">{booking.guestName}</td>
@@ -152,7 +149,8 @@ export default function ListView({ currentDate, properties }: ListViewProps) {
               return (
                 <div
                   key={booking.id}
-                  className={`p-3 rounded-xl border space-y-2 ${
+                  onClick={() => onSelectBooking?.(booking)}
+                  className={`p-3 rounded-xl border space-y-2 cursor-pointer transition-colors hover:border-indigo-500/50 ${
                     isActive
                       ? "bg-indigo-950/10 border-indigo-900/40"
                       : "bg-slate-900/20 border-slate-800/50"

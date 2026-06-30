@@ -13,11 +13,12 @@ import DayCell from "../ui/day-cell";
 interface MonthViewProps {
   currentDate: Date;
   properties: CalendarProperty[];
+  onSelectBooking?: (booking: CalendarBooking) => void;
 }
 
 const WEEK_DAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
-export default function MonthView({ currentDate, properties }: MonthViewProps) {
+export default function MonthView({ currentDate, properties, onSelectBooking }: MonthViewProps) {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -73,6 +74,7 @@ export default function MonthView({ currentDate, properties }: MonthViewProps) {
                 isCurrentMonth={isCurrentMonth}
                 allBookings={allBookings}
                 allPeriods={allPeriods}
+                onSelectBooking={onSelectBooking}
               />
             </div>
           );
@@ -87,6 +89,7 @@ export default function MonthView({ currentDate, properties }: MonthViewProps) {
                 isCurrentMonth={isCurrentMonth}
                 allBookings={allBookings}
                 allPeriods={allPeriods}
+                onSelectBooking={onSelectBooking}
                 isCompact
               />
             </div>

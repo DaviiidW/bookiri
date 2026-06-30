@@ -9,6 +9,7 @@ interface DayCellProps {
   allBookings: CalendarBooking[];
   allPeriods: CalendarAvailabilityPeriod[];
   isCompact?: boolean;
+  onSelectBooking?: (booking: CalendarBooking) => void;
 }
 
 export default function DayCell({
@@ -17,6 +18,7 @@ export default function DayCell({
   allBookings,
   allPeriods,
   isCompact = false,
+  onSelectBooking,
 }: DayCellProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -31,7 +33,7 @@ export default function DayCell({
   const visibleBookings = bookings.slice(0, MAX_VISIBLE);
   const overflow = bookings.length - MAX_VISIBLE;
 
-  let bgClass = "bg-slate-900/20"; // available, no bookings
+  let bgClass = "bg-slate-900/20";
   if (!available) bgClass = "bg-slate-950/60";
   if (hasBookings) bgClass = "bg-slate-900/30";
   if (!isCurrentMonth) bgClass = "bg-transparent";
@@ -71,7 +73,7 @@ export default function DayCell({
           {isCompact ? (
             <div className="flex flex-wrap gap-0.5">
               {bookings.slice(0, 3).map((b) => (
-                <BookingChip key={b.id} booking={b} compact />
+                <BookingChip key={b.id} booking={b} compact onClick={() => onSelectBooking?.(b)} />
               ))}
               {bookings.length > 3 && (
                 <span className="text-[9px] text-slate-400">+{bookings.length - 3}</span>
@@ -80,7 +82,7 @@ export default function DayCell({
           ) : (
             <>
               {visibleBookings.map((b) => (
-                <BookingChip key={b.id} booking={b} />
+                <BookingChip key={b.id} booking={b} onClick={() => onSelectBooking?.(b)} />
               ))}
               {overflow > 0 && (
                 <span className="text-[9px] text-slate-400 pl-1 mt-0.5">+{overflow} más</span>
