@@ -115,7 +115,7 @@ export default function PropertyBookingsList({
     <div className="bg-slate-900/40 border border-slate-900 rounded-3xl p-6 md:p-8 shadow-xl space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-850 pb-4">
         <div>
-          <h3 className="text-lg font-bold text-white">Reservas de la Vivienda</h3>
+          <h3 className="text-lg font-bold text-white">Futuras reservas de la vivienda</h3>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-center">

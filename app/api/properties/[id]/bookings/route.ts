@@ -52,9 +52,15 @@ export async function GET(
 
     const skip = (page - 1) * limit;
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const totalCount = await db.booking.count({
       where: {
         propertyId: id,
+        checkOutDate: {
+          gte: today,
+        },
         deletedAt: null,
       },
     });
@@ -62,10 +68,13 @@ export async function GET(
     const bookings = await db.booking.findMany({
       where: {
         propertyId: id,
+        checkOutDate: {
+          gte: today,
+        },
         deletedAt: null,
       },
       orderBy: {
-        checkInDate: "desc",
+        checkInDate: "asc",
       },
       skip,
       take: limit,
