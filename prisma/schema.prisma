@@ -46,6 +46,7 @@ model Property {
 model PropertyAvailabilityPeriod {
   id         String   @id @default(cuid())
   propertyId String
+  description String?
 
   startDate  DateTime
   endDate    DateTime
