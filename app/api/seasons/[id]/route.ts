@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { splitBookingIntoTramos, calculatePriceFromTramos } from "@/lib/price-calculator";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -86,58 +87,6 @@ export async function PUT(req: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Vivienda no encontrada" }, { status: 404 });
     }
 
-    if (Array.isArray(bookingActions) && bookingActions.length > 0) {
-      for (const action of bookingActions) {
-        const { bookingId, action: actionType, manualPrice } = action;
-
-        if (actionType === "keep") continue;
-
-        if (actionType === "recalculate" || actionType === "manual") {
-          const newPrice =
-            actionType === "manual" ? parseFloat(manualPrice) : null;
-
-          const segments = await db.bookingPriceSegment.findMany({
-            where: { bookingId },
-          });
-
-          if (actionType === "recalculate") {
-            await db.bookingPriceSegment.updateMany({
-              where: { bookingId, seasonId: id },
-              data: {
-                pricePerNight: price,
-                subtotal: {
-                },
-              },
-            });
-
-            const seasonSegments = segments.filter((s) => s.seasonId === id);
-            for (const seg of seasonSegments) {
-              const newSubtotal = price * seg.nights;
-              await db.bookingPriceSegment.update({
-                where: { id: seg.id },
-                data: { pricePerNight: price, subtotal: newSubtotal },
-              });
-            }
-          } else if (actionType === "manual" && newPrice !== null && !isNaN(newPrice)) {
-            await db.booking.update({
-              where: { id: bookingId },
-              data: { totalPrice: newPrice },
-            });
-            continue; 
-          }
-
-          const updatedSegments = await db.bookingPriceSegment.findMany({
-            where: { bookingId },
-          });
-          const newTotal = updatedSegments.reduce((acc, s) => acc + s.subtotal, 0);
-          await db.booking.update({
-            where: { id: bookingId },
-            data: { totalPrice: newTotal },
-          });
-        }
-      }
-    }
-
     const updated = await db.season.update({
       where: { id },
       data: {
@@ -153,6 +102,67 @@ export async function PUT(req: Request, { params }: RouteParams) {
         property: { select: { id: true, name: true, color: true } },
       },
     });
+
+    if (Array.isArray(bookingActions) && bookingActions.length > 0) {
+      for (const action of bookingActions) {
+        const { bookingId, action: actionType, manualPrice } = action;
+
+        if (actionType === "keep") {
+          await db.bookingPriceSegment.deleteMany({
+            where: { bookingId },
+          });
+          continue;
+        }
+
+        if (actionType === "manual") {
+          const manualVal = parseFloat(manualPrice);
+          if (!isNaN(manualVal)) {
+            await db.booking.update({
+              where: { id: bookingId },
+              data: { totalPrice: manualVal },
+            });
+            await db.bookingPriceSegment.deleteMany({
+              where: { bookingId },
+            });
+          }
+          continue;
+        }
+
+        if (actionType === "recalculate") {
+          const bookingToRecalc = await db.booking.findUnique({
+            where: { id: bookingId },
+          });
+
+          if (bookingToRecalc) {
+            const propSeasons = await db.season.findMany({
+              where: { propertyId: bookingToRecalc.propertyId, deletedAt: null },
+            });
+            const bookingTramos = splitBookingIntoTramos(
+              bookingToRecalc.checkInDate.toISOString(),
+              bookingToRecalc.checkOutDate.toISOString(),
+              propSeasons
+            );
+
+            const tramoConfigs = bookingTramos.map((t) => ({
+              startDate: t.startDate,
+              endDate: t.endDate,
+              selectedSeasonId: t.selectedSeasonId
+            }));
+
+            const calc = calculatePriceFromTramos(tramoConfigs, propSeasons);
+
+            await db.booking.update({
+              where: { id: bookingId },
+              data: { totalPrice: calc.totalPrice },
+            });
+
+            await db.bookingPriceSegment.deleteMany({
+              where: { bookingId },
+            });
+          }
+        }
+      }
+    }
 
     return NextResponse.json({ success: true, season: updated });
   } catch (error) {

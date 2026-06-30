@@ -19,7 +19,7 @@ interface AffectedBooking {
   totalPrice: number;
   propertyName: string;
   propertyColor: string;
-  seasonSegments: { id: string; nights: number; pricePerNight: number; subtotal: number }[];
+  recalculatedPrice?: number;
 }
 
 type BookingActionType = "recalculate" | "keep" | "manual";
@@ -184,19 +184,17 @@ export default function SeasonFormModal({
   const propertyChanged = isEditMode && propertyId !== season!.property.id;
   const hasCriticalChange = priceChanged || dateChanged || minStayChanged;
 
-  const calcRecalculatedPrice = (booking: AffectedBooking): number => {
-    const newPrice = parseFloat(pricePerNight);
-    const totalNightsInSeason = booking.seasonSegments.reduce((a, s) => a + s.nights, 0);
-    const seasonSubtotal = totalNightsInSeason * newPrice;
-    const otherSegmentsSubtotal = booking.totalPrice - booking.seasonSegments.reduce((a, s) => a + s.subtotal, 0);
-    return Math.max(0, otherSegmentsSubtotal + seasonSubtotal);
-  };
-
   const fetchAffectedBookings = async (): Promise<AffectedBooking[]> => {
     if (!season) return [];
     setIsCheckingAffected(true);
     try {
-      const res = await fetch(`/api/seasons/${season.id}/affected-bookings`);
+      const params = new URLSearchParams({
+        pricePerNight,
+        startDate,
+        endDate,
+        propertyId
+      });
+      const res = await fetch(`/api/seasons/${season.id}/affected-bookings?${params.toString()}`);
       const data = await res.json();
       if (res.ok && data.success) return data.affectedBookings || [];
       return [];
@@ -213,7 +211,7 @@ export default function SeasonFormModal({
       initial[b.id] = {
         bookingId: b.id,
         action: "keep",
-        recalculatedPrice: calcRecalculatedPrice(b),
+        recalculatedPrice: b.recalculatedPrice,
       };
     }
     setBookingActions(initial);
@@ -233,14 +231,14 @@ export default function SeasonFormModal({
     if (isNaN(minStay) || minStay < 1) return setError("La estancia mínima debe ser al menos 1 noche");
 
     if (isEditMode) {
-      if (propertyChanged) {
+      if (propertyChanged || dateChanged) {
         const affected = await fetchAffectedBookings();
-        setAffectedBookings(affected);
-        setStep("affected-property");
-        return;
-      }
-
-      if (hasCriticalChange) {
+        if (affected.length > 0) {
+          setAffectedBookings(affected);
+          setStep("affected-property");
+          return;
+        }
+      } else if (priceChanged || minStayChanged) {
         const affected = await fetchAffectedBookings();
         if (affected.length > 0) {
           setAffectedBookings(affected);
@@ -733,9 +731,11 @@ export default function SeasonFormModal({
                 <div className="flex items-start gap-2">
                   <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-semibold text-amber-400">Cambio de vivienda</p>
+                    <p className="text-xs font-semibold text-amber-400">
+                      {propertyChanged ? "Cambio de vivienda" : "Cambio de fechas de la temporada"}
+                    </p>
                     <p className="text-[11px] text-amber-300/70 leading-relaxed mt-1">
-                      Al cambiar la vivienda de esta temporada, las reservas existentes vinculadas a ella <strong>dejarán de estar asociadas a esta temporada</strong>, pero <strong>conservarán su precio histórico</strong>.
+                      Las reservas conservarán el precio que tenían asignado cuando fueron creadas salvo que el administrador decida recalcularlas.
                     </p>
                   </div>
                 </div>

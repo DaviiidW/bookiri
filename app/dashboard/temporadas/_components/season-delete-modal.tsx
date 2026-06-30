@@ -121,13 +121,14 @@ export default function SeasonDeleteModal({
             <>
               {hasAffected && (
                 <div className="space-y-3">
-                  <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/30">
-                    <p className="text-xs font-semibold text-amber-400 mb-1">
-                      {affectedBookings.length} reserva{affectedBookings.length > 1 ? "s" : ""} utiliza{affectedBookings.length === 1 ? "" : "n"} esta temporada
+                  <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/30 space-y-2">
+                    <p className="text-xs font-bold text-amber-400">
+                      La temporada será eliminada.
                     </p>
-                    <p className="text-[11px] text-amber-300/70 leading-relaxed">
-                      Al eliminar la temporada, <strong>los precios de estas reservas no cambiarán</strong>. Todas conservarán el precio asignado cuando fueron creadas. Las reservas futuras dejarán de poder utilizar esta temporada.
-                    </p>
+                    <ul className="list-disc list-inside text-[11px] text-amber-300/80 space-y-1 leading-relaxed">
+                      <li>Las reservas conservarán el precio actualmente almacenado.</li>
+                      <li>Únicamente dejarán de utilizar dicha temporada para futuras modificaciones o recalculos.</li>
+                    </ul>
                   </div>
 
                   <div className="space-y-2">
