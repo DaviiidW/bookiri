@@ -38,6 +38,7 @@ export default function PropertyFormModal({
   
   const [color, setColor] = useState(PREDEFINED_COLORS[0].hex);
   const [isCustomColor, setIsCustomColor] = useState(false);
+  const [showCustomSliders, setShowCustomSliders] = useState(false);
   const [hue, setHue] = useState(180);
   const [saturation, setSaturation] = useState(70);
   const [lightness, setLightness] = useState(50);
@@ -92,8 +93,10 @@ export default function PropertyFormModal({
         if (isPredefined) {
           setColor(property.color);
           setIsCustomColor(false);
+          setShowCustomSliders(false);
         } else {
           setIsCustomColor(true);
+          setShowCustomSliders(false);
           if (property.color.startsWith("hsl")) {
             const match = property.color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
             if (match) {
@@ -112,6 +115,7 @@ export default function PropertyFormModal({
         setName("");
         setColor(PREDEFINED_COLORS[0].hex);
         setIsCustomColor(false);
+        setShowCustomSliders(false);
         setHue(180);
         setSaturation(70);
         setLightness(50);
@@ -251,6 +255,7 @@ export default function PropertyFormModal({
                   onClick={() => {
                     setColor(c.hex);
                     setIsCustomColor(false);
+                    setShowCustomSliders(false);
                   }}
                   className={`w-full aspect-square rounded-full transition-transform cursor-pointer border ${
                     !isCustomColor && color.toLowerCase() === c.hex.toLowerCase()
@@ -264,7 +269,14 @@ export default function PropertyFormModal({
 
               <button
                 type="button"
-                onClick={() => setIsCustomColor(true)}
+                onClick={() => {
+                  if (isCustomColor) {
+                    setShowCustomSliders((prev) => !prev);
+                  } else {
+                    setIsCustomColor(true);
+                    setShowCustomSliders(true);
+                  }
+                }}
                 className={`w-full aspect-square rounded-full transition-transform cursor-pointer border relative overflow-hidden ${
                   isCustomColor
                     ? "scale-110 ring-2 ring-white border-transparent"
@@ -277,11 +289,11 @@ export default function PropertyFormModal({
                 }}
                 title="Color Personalizado"
               >
-                <Palette className={`w-3.5 h-3.5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/90 ${isCustomColor ? "hidden" : "block"}`} />
+                <Palette className="w-3.5 h-3.5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
               </button>
             </div>
 
-            {isCustomColor && (
+            {showCustomSliders && (
               <div className="p-4 border border-slate-850 bg-slate-950/50 rounded-2xl space-y-4 animate-in fade-in duration-200">
                 <div className="flex items-center gap-3">
                   <div
