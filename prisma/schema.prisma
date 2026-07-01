@@ -41,6 +41,7 @@ model Property {
   bookings            Booking[]
 
   sharedCalendars SharedCalendarProperty[]
+  sharedCalendarPriceRules SharedCalendarPriceRule[]
 }
 
 model PropertyAvailabilityPeriod {
@@ -77,7 +78,6 @@ model Season {
   property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   bookingSegments BookingPriceSegment[]
-  sharedCalendarPrices SharedCalendarSeasonPrice[]
 }
 
 model Booking {
@@ -144,12 +144,15 @@ model SharedCalendar {
   expiresAt DateTime?
   isActive  Boolean @default(true)
 
+  showPrice        Boolean @default(false)
+  showSeasonPrices Boolean @default(false)
+
   viewType  SharedCalendarViewType
 
   createdAt DateTime @default(now())
 
   properties SharedCalendarProperty[]
-  seasonPrices SharedCalendarSeasonPrice[]
+  priceRules  SharedCalendarPriceRule[]
 }
 
 model SharedCalendarProperty {
@@ -162,16 +165,21 @@ model SharedCalendarProperty {
   @@id([sharedCalendarId, propertyId])
 }
 
-model SharedCalendarSeasonPrice {
-  id String @id @default(cuid())
-
+model SharedCalendarPriceRule {
+  id               String @id @default(cuid())
   sharedCalendarId String
-  seasonId         String
+  propertyId       String
 
-  publicPricePerNight Float
+  label         String?
+  startDate     DateTime
+  endDate       DateTime
+  pricePerNight Float
+  daysOfWeek    Int[]    @default([])
+
+  createdAt DateTime @default(now())
 
   sharedCalendar SharedCalendar @relation(fields: [sharedCalendarId], references: [id], onDelete: Cascade)
-  season         Season         @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  property       Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 enum SharedCalendarViewType {
