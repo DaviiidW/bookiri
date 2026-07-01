@@ -1,0 +1,654 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { Calendar } from "lucide-react";
+import type { SharedCalendar, SharedCalendarPriceRule } from "./shared-calendars-shell";
+
+interface Property {
+  id: string;
+  name: string;
+  color: string;
+}
+
+interface DraftRule {
+  id: string;
+  label: string;
+  startDate: string;
+  endDate: string;
+  pricePerNight: string;
+  daysOfWeek: number[];
+  propertyId: string;
+}
+
+interface Props {
+  calendar: SharedCalendar | null;
+  onClose: () => void;
+  onSave: () => void;
+}
+
+const DOW = [
+  { iso: 1, label: "L" },
+  { iso: 2, label: "M" },
+  { iso: 3, label: "X" },
+  { iso: 4, label: "J" },
+  { iso: 5, label: "V" },
+  { iso: 6, label: "S" },
+  { iso: 7, label: "D" },
+];
+
+const WEEKDAYS = [1, 2, 3, 4, 5];
+const WEEKEND = [6, 7];
+const ALL_DAYS: number[] = [];
+
+function makeDraftRule(propertyId: string): DraftRule {
+  return {
+    id: crypto.randomUUID(),
+    label: "",
+    startDate: "",
+    endDate: "",
+    pricePerNight: "",
+    daysOfWeek: ALL_DAYS,
+    propertyId,
+  };
+}
+
+function dbRuleToDraft(r: SharedCalendarPriceRule): DraftRule {
+  return {
+    id: r.id,
+    label: r.label ?? "",
+    startDate: r.startDate.split("T")[0],
+    endDate: r.endDate.split("T")[0],
+    pricePerNight: String(r.pricePerNight),
+    daysOfWeek: r.daysOfWeek ?? [],
+    propertyId: r.propertyId,
+  };
+}
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+function arraysEqual(a: number[], b: number[]) {
+  return a.length === b.length && a.every((v) => b.includes(v));
+}
+
+function DowSelector({
+  value,
+  onChange,
+}: {
+  value: number[];
+  onChange: (v: number[]) => void;
+}) {
+  const isAll = value.length === 0;
+  const isWeekdays = arraysEqual(value, WEEKDAYS);
+  const isWeekend = arraysEqual(value, WEEKEND);
+
+  const toggleDay = (iso: number) => {
+    if (isAll) {
+      onChange(DOW.filter((d) => d.iso !== iso).map((d) => d.iso));
+    } else {
+      const next = value.includes(iso) ? value.filter((v) => v !== iso) : [...value, iso];
+      onChange(next.length === 7 ? [] : next);
+    }
+  };
+
+  const isSelected = (iso: number) => value.length === 0 || value.includes(iso);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-1.5">
+        {(
+          [
+            { label: "Todos", v: ALL_DAYS, active: isAll },
+            { label: "L–V", v: WEEKDAYS, active: isWeekdays },
+            { label: "S–D", v: WEEKEND, active: isWeekend },
+          ] as const
+        ).map((preset) => (
+          <button
+            key={preset.label}
+            type="button"
+            onClick={() => onChange(preset.v as unknown as number[])}
+            className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer ${
+              preset.active
+                ? "bg-violet-600 text-white"
+                : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+            }`}
+          >
+            {preset.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-1">
+        {DOW.map((d) => (
+          <button
+            key={d.iso}
+            type="button"
+            onClick={() => toggleDay(d.iso)}
+            className={`flex-1 h-8 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+              isSelected(d.iso)
+                ? "bg-violet-600/80 text-white"
+                : "bg-slate-800 text-slate-600 hover:bg-slate-700"
+            }`}
+          >
+            {d.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function SharedCalendarFormModal({ calendar, onClose, onSave }: Props) {
+  const isEditing = !!calendar;
+  const expiresAtRef = useRef<HTMLInputElement>(null);
+  const inputsRef = useRef<Record<string, HTMLInputElement | null>>({});
+
+
+  const [name, setName] = useState(calendar?.name ?? "");
+  const [showPrice, setShowPrice] = useState(calendar?.showPrice ?? false);
+  const [showSeasonPrices, setShowSeasonPrices] = useState(calendar?.showSeasonPrices ?? false);
+  const [expiresAt, setExpiresAt] = useState(
+    calendar?.expiresAt ? new Date(calendar.expiresAt).toISOString().split("T")[0] : ""
+  );
+  const [selectedIds, setSelectedIds] = useState<string[]>(
+    calendar?.properties.map((p) => p.property.id) ?? []
+  );
+  const [priceRules, setPriceRules] = useState<DraftRule[]>(
+    calendar?.priceRules.map(dbRuleToDraft) ?? []
+  );
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Controlar qué vivienda se muestra expandida al configurar tramos
+  const [expandedPropertyId, setExpandedPropertyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/properties")
+      .then((r) => r.json())
+      .then((d) => {
+        const props = d.properties ?? [];
+        setProperties(props);
+        if (props.length > 0 && !isEditing) {
+          // Por defecto no abrimos nada o abrimos la primera seleccionada
+        }
+      });
+  }, [isEditing]);
+
+  // Al cambiar la selección de viviendas, limpiar las reglas de viviendas deseleccionadas
+  useEffect(() => {
+    setPriceRules((prev) => prev.filter((r) => selectedIds.includes(r.propertyId)));
+  }, [selectedIds]);
+
+  // Si la vivienda que estaba expandida deja de estar seleccionada, expandimos la primera seleccionada
+  useEffect(() => {
+    if (expandedPropertyId && !selectedIds.includes(expandedPropertyId)) {
+      setExpandedPropertyId(selectedIds[0] || null);
+    } else if (!expandedPropertyId && selectedIds.length > 0 && priceRules.length === 0) {
+      // Opcional: expande por defecto solo al inicio si no hay nada activo
+      setExpandedPropertyId(selectedIds[0]);
+    }
+  }, [selectedIds]);
+
+  const toggleProperty = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const addRule = (propertyId: string) => {
+    setPriceRules((prev) => [...prev, makeDraftRule(propertyId)]);
+  };
+
+  const removeRule = (id: string) => setPriceRules((prev) => prev.filter((r) => r.id !== id));
+
+  const updateRule = (id: string, field: keyof DraftRule, value: unknown) =>
+    setPriceRules((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
+
+  const validateRules = (): string | null => {
+    for (const r of priceRules) {
+      if (!r.startDate || !r.endDate) return "Todos los tramos necesitan fecha de inicio y fin.";
+      if (new Date(r.endDate) < new Date(r.startDate))
+        return "La fecha de fin debe ser posterior a la de inicio.";
+      const price = parseFloat(r.pricePerNight);
+      if (isNaN(price) || price <= 0) return "El precio por noche debe ser mayor que 0.";
+    }
+
+    // Validación de solapamientos agrupando por propertyId
+    const rulesByProperty: Record<string, DraftRule[]> = {};
+    for (const r of priceRules) {
+      if (!rulesByProperty[r.propertyId]) {
+        rulesByProperty[r.propertyId] = [];
+      }
+      rulesByProperty[r.propertyId].push(r);
+    }
+
+    for (const propertyId in rulesByProperty) {
+      const propRules = rulesByProperty[propertyId];
+      const propertyName = properties.find((p) => p.id === propertyId)?.name || "Vivienda";
+
+      for (let i = 0; i < propRules.length; i++) {
+        for (let j = i + 1; j < propRules.length; j++) {
+          const a = propRules[i];
+          const b = propRules[j];
+          if (!a.startDate || !a.endDate || !b.startDate || !b.endDate) continue;
+
+          const datesOverlap =
+            new Date(a.startDate) <= new Date(b.endDate) &&
+            new Date(b.startDate) <= new Date(a.endDate);
+
+          if (!datesOverlap) continue;
+
+          const aDays = a.daysOfWeek.length === 0 ? [1, 2, 3, 4, 5, 6, 7] : a.daysOfWeek;
+          const bDays = b.daysOfWeek.length === 0 ? [1, 2, 3, 4, 5, 6, 7] : b.daysOfWeek;
+          const daysOverlap = aDays.some((d) => bDays.includes(d));
+
+          if (daysOverlap) {
+            const nameA = a.label.trim() || `Tramo ${i + 1}`;
+            const nameB = b.label.trim() || `Tramo ${j + 1}`;
+            return `En "${propertyName}", los tramos "${nameA}" y "${nameB}" se solapan en fechas y días de semana.`;
+          }
+        }
+      }
+    }
+
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedIds.length === 0) { setError("Selecciona al menos una vivienda."); return; }
+    if (showPrice) {
+      const ruleError = validateRules();
+      if (ruleError) { setError(ruleError); return; }
+    }
+
+    setIsSaving(true);
+    setError(null);
+
+    const payload = {
+      name: name.trim() || null,
+      propertyIds: selectedIds,
+      showPrice,
+      showSeasonPrices: showPrice ? showSeasonPrices : false,
+      expiresAt: expiresAt || null,
+      priceRules: showPrice
+        ? priceRules.map((r) => ({
+            label: r.label.trim() || null,
+            startDate: r.startDate,
+            endDate: r.endDate,
+            pricePerNight: parseFloat(r.pricePerNight),
+            daysOfWeek: r.daysOfWeek,
+            propertyId: r.propertyId,
+          }))
+        : [],
+    };
+
+    const url = isEditing ? `/api/shared-calendars/${calendar.id}` : "/api/shared-calendars";
+    const method = isEditing ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      let message = "Error desconocido";
+      try { const data = JSON.parse(text); message = data.error ?? message; } catch {
+        message = `Error del servidor (${res.status})`;
+      }
+      setError(message);
+      setIsSaving(false);
+      return;
+    }
+
+    setIsSaving(false);
+    onSave();
+  };
+
+  // Filtrar viviendas seleccionadas para la UI de precios por tramos
+  const selectedProperties = properties.filter((p) => selectedIds.includes(p.id));
+
+  return (
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="flex items-center justify-between p-6 border-b border-slate-800 shrink-0">
+          <h2 className="text-white font-bold text-lg">
+            {isEditing ? "Editar enlace" : "Nuevo enlace compartido"}
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg text-slate-500 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="overflow-y-auto flex-1">
+          <div className="p-6 space-y-5">
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                Nombre del enlace <span className="text-slate-600">(opcional)</span>
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ej: Clientes verano 2025"
+                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-2">
+                Viviendas incluidas <span className="text-red-400">*</span>
+              </label>
+              {properties.length === 0 ? (
+                <p className="text-slate-500 text-sm">Cargando viviendas…</p>
+              ) : (
+                <div className="grid grid-cols-1 gap-2">
+                  {properties.map((p) => (
+                    <label
+                      key={p.id}
+                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                        selectedIds.includes(p.id)
+                          ? "border-violet-600/70 bg-violet-950/30"
+                          : "border-slate-800 bg-slate-950/30 hover:border-slate-700"
+                      }`}
+                    >
+                      <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggleProperty(p.id)} className="sr-only" />
+                      <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
+                      <span className="text-sm text-slate-200 flex-1">{p.name}</span>
+                      {selectedIds.includes(p.id) && (
+                        <svg className="w-4 h-4 text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                Fecha de expiración <span className="text-slate-600">(opcional)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="date"
+                  ref={expiresAtRef}
+                  value={expiresAt}
+                  onChange={(e) => setExpiresAt(e.target.value)}
+                  min={new Date().toISOString().split("T")[0]}
+                  className="w-full pl-3 pr-9 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      expiresAtRef.current?.showPicker();
+                    } catch (e) {
+                      expiresAtRef.current?.focus();
+                    }
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
+                  title="Seleccionar fecha"
+                >
+                  <Calendar className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="border border-slate-800 rounded-2xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => { setShowPrice((v) => !v); }}
+                className="w-full flex items-center justify-between p-4 bg-slate-950/50 hover:bg-slate-800/30 transition-all cursor-pointer"
+              >
+                <div className="text-left">
+                  <p className="text-sm text-slate-200 font-medium">Mostrar precios por noche</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Configura tramos con precio visible para el visitante.</p>
+                </div>
+                <div className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${showPrice ? "bg-violet-600" : "bg-slate-700"}`}>
+                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${showPrice ? "translate-x-5" : "translate-x-0"}`} />
+                </div>
+              </button>
+
+              {showPrice && (
+                <div className="border-t border-slate-800 divide-y divide-slate-800/60">
+                  <button
+                    type="button"
+                    onClick={() => setShowSeasonPrices((v) => !v)}
+                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-800/20 transition-all cursor-pointer"
+                  >
+                    <div className="text-left">
+                      <p className="text-xs text-slate-300 font-medium">Mostrar precios de temporada como base</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Días sin tramo configurado mostrarán el precio de la temporada interna (en azul).
+                      </p>
+                    </div>
+                    <div className={`relative w-9 h-5 rounded-full transition-colors shrink-0 ml-3 ${showSeasonPrices ? "bg-sky-600" : "bg-slate-700"}`}>
+                      <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${showSeasonPrices ? "translate-x-4" : "translate-x-0"}`} />
+                    </div>
+                  </button>
+
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tramos de precio</p>
+                    </div>
+
+                    {selectedProperties.length === 0 && (
+                      <p className="text-xs text-slate-500 italic text-center py-2">
+                        Selecciona al menos una vivienda para configurar sus precios.
+                      </p>
+                    )}
+
+                    {selectedProperties.map((prop) => {
+                      const propRules = priceRules.filter((r) => r.propertyId === prop.id);
+                      const isExpanded = expandedPropertyId === prop.id;
+
+                      return (
+                        <div key={prop.id} className="border border-slate-800 rounded-xl overflow-hidden">
+                          {/* Cabecera del acordeón de la vivienda */}
+                          <button
+                            type="button"
+                            onClick={() => setExpandedPropertyId(isExpanded ? null : prop.id)}
+                            className="w-full flex items-center justify-between p-3 bg-slate-950/40 hover:bg-slate-850/50 transition-all text-left"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: prop.color }} />
+                              <span className="text-xs font-bold text-slate-200">{prop.name}</span>
+                              <span className="text-[10px] text-slate-500">({propRules.length} tramos)</span>
+                            </div>
+                            <svg
+                              className={`w-4 h-4 text-slate-500 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+
+                          {/* Lista de tramos de la vivienda (solo si está expandido) */}
+                          {isExpanded && (
+                            <div className="p-3 bg-slate-900/60 border-t border-slate-800 space-y-3">
+                              <div className="flex justify-end">
+                                <button
+                                  type="button"
+                                  onClick={() => addRule(prop.id)}
+                                  className="flex items-center gap-1.5 text-xs font-semibold text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                                  </svg>
+                                  Añadir tramo
+                                </button>
+                              </div>
+
+                              {propRules.length === 0 && (
+                                <p className="text-xs text-slate-600 italic text-center py-2">
+                                  {showSeasonPrices
+                                    ? "Sin tramos. Se usarán los precios de temporada."
+                                    : "Sin tramos configurados. Los días no mostrarán precio."}
+                                </p>
+                              )}
+
+                              {propRules.map((rule, idx) => (
+                                <div key={rule.id} className="bg-slate-950/40 border border-slate-800 rounded-xl p-3 space-y-2.5">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <input
+                                      type="text"
+                                      value={rule.label}
+                                      onChange={(e) => updateRule(rule.id, "label", e.target.value)}
+                                      placeholder={`Etiqueta (ej: Fin de semana)`}
+                                      className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => removeRule(rule.id)}
+                                      className="p-1.5 rounded-lg text-red-500/60 hover:text-red-400 hover:bg-red-950/30 transition-all cursor-pointer shrink-0"
+                                    >
+                                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                      </svg>
+                                    </button>
+                                  </div>
+
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                      <label className="block text-[10px] text-slate-500 mb-1">Desde</label>
+                                      <div className="relative">
+                                        <input
+                                          type="date"
+                                          ref={(el) => { inputsRef.current[rule.id + "-start"] = el; }}
+                                          value={rule.startDate}
+                                          onChange={(e) => updateRule(rule.id, "startDate", e.target.value)}
+                                          className="w-full pl-3 pr-9 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            try {
+                                              inputsRef.current[rule.id + "-start"]?.showPicker();
+                                            } catch (e) {
+                                              inputsRef.current[rule.id + "-start"]?.focus();
+                                            }
+                                          }}
+                                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
+                                          title="Seleccionar fecha"
+                                        >
+                                          <Calendar className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <label className="block text-[10px] text-slate-500 mb-1">Hasta</label>
+                                      <div className="relative">
+                                        <input
+                                          type="date"
+                                          ref={(el) => { inputsRef.current[rule.id + "-end"] = el; }}
+                                          value={rule.endDate}
+                                          min={rule.startDate}
+                                          onChange={(e) => updateRule(rule.id, "endDate", e.target.value)}
+                                          className="w-full pl-3 pr-9 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            try {
+                                              inputsRef.current[rule.id + "-end"]?.showPicker();
+                                            } catch (e) {
+                                              inputsRef.current[rule.id + "-end"]?.focus();
+                                            }
+                                          }}
+                                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
+                                          title="Seleccionar fecha"
+                                        >
+                                          <Calendar className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500 mb-1">Precio por noche (€)</label>
+                                    <div className="relative">
+                                      <input
+                                        type="number"
+                                        value={rule.pricePerNight}
+                                        onChange={(e) => updateRule(rule.id, "pricePerNight", e.target.value)}
+                                        placeholder="0"
+                                        min="1"
+                                        step="0.01"
+                                        className="w-full pl-7 pr-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                      />
+                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs">€</span>
+                                      {rule.pricePerNight && !isNaN(parseFloat(rule.pricePerNight)) && (
+                                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-500 text-[10px] font-semibold">
+                                          {formatPrice(parseFloat(rule.pricePerNight))}/noche
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500 mb-1.5">Días de la semana</label>
+                                    <DowSelector
+                                      value={rule.daysOfWeek}
+                                      onChange={(v) => updateRule(rule.id, "daysOfWeek", v)}
+                                    />
+                                    <p className="text-[10px] text-slate-600 mt-1">
+                                      {rule.daysOfWeek.length === 0
+                                        ? "Aplica todos los días"
+                                        : `Aplica solo: ${rule.daysOfWeek.sort().map((d) => ["", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"][d]).join(", ")}`}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {error && (
+              <div className="px-4 py-3 rounded-xl bg-red-950/40 border border-red-800/50 text-red-300 text-sm">
+                {error}
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-3 justify-end p-6 pt-0 shrink-0">
+            <button type="button" onClick={onClose} className="px-4 py-2.5 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="px-5 py-2.5 text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition-all disabled:opacity-40 disabled:pointer-events-none min-w-[110px] flex items-center justify-center cursor-pointer"
+            >
+              {isSaving ? (
+                <div className="w-4 h-4 border-2 border-violet-300 border-t-white rounded-full animate-spin" />
+              ) : isEditing ? "Guardar cambios" : "Crear enlace"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
