@@ -3,6 +3,7 @@ import { AlertTriangle, Users, User, Calendar, Euro, DollarSign, Clock, FileText
 import { Property } from "../_hooks/use-booking-form";
 import { Tramo } from "@/lib/price-calculator";
 import DatePicker from "@/components/date-picker";
+import SelectDropdown from "@/components/select-dropdown";
 
 interface BookingEditFormProps {
   state: {
@@ -92,20 +93,14 @@ export default function BookingEditForm({
               <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Vivienda
               </label>
-              <select
+              <SelectDropdown
+                options={state.properties.map((p) => ({ value: p.id, label: p.name }))}
                 value={state.propertyId}
-                onChange={(e) => actions.setPropertyId(e.target.value)}
+                onChange={actions.setPropertyId}
                 disabled={state.isReadOnly}
-                className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
-                required
-              >
-                <option value="">Selecciona una vivienda...</option>
-                {state.properties.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                placeholder="Selecciona una vivienda..."
+                triggerClassName="w-full flex items-center justify-between gap-2 px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
+              />
             </div>
 
             <div className="space-y-1.5">
