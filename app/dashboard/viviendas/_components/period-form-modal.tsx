@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { X, Calendar } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import DatePicker from "@/components/date-picker";
 
 interface Period {
   id?: string;
@@ -25,9 +26,6 @@ export default function PeriodFormModal({
   period,
   isSaving,
 }: PeriodFormModalProps) {
-  const startDateRef = useRef<HTMLInputElement>(null);
-  const endDateRef = useRef<HTMLInputElement>(null);
-
   const [periodDesc, setPeriodDesc] = useState("");
   const [periodStart, setPeriodStart] = useState("");
   const [periodEnd, setPeriodEnd] = useState("");
@@ -105,59 +103,22 @@ export default function PeriodFormModal({
               <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Fecha de Inicio
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  required
-                  ref={startDateRef}
-                  value={periodStart}
-                  onChange={(e) => setPeriodStart(e.target.value)}
-                  className="w-full pl-3 pr-9 py-2 bg-slate-950 border border-slate-850 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      startDateRef.current?.showPicker();
-                    } catch (e) {
-                      startDateRef.current?.focus();
-                    }
-                  }}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
-                  title="Seleccionar fecha"
-                >
-                  <Calendar className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <DatePicker
+                value={periodStart}
+                onChange={setPeriodStart}
+                triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-2 bg-slate-950 border border-slate-850 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
             </div>
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Fecha de Fin
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  required
-                  ref={endDateRef}
-                  value={periodEnd}
-                  onChange={(e) => setPeriodEnd(e.target.value)}
-                  className="w-full pl-3 pr-9 py-2 bg-slate-950 border border-slate-850 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      endDateRef.current?.showPicker();
-                    } catch (e) {
-                      endDateRef.current?.focus();
-                    }
-                  }}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
-                  title="Seleccionar fecha"
-                >
-                  <Calendar className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <DatePicker
+                value={periodEnd}
+                onChange={setPeriodEnd}
+                min={periodStart}
+                triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-2 bg-slate-950 border border-slate-850 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
             </div>
           </div>
 

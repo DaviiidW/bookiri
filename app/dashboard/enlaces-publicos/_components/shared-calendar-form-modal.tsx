@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Calendar } from "lucide-react";
+import { useState, useEffect } from "react";
 import type { SharedCalendar, SharedCalendarPriceRule } from "./shared-calendars-shell";
+import DatePicker from "@/components/date-picker";
 
 interface Property {
   id: string;
@@ -145,9 +145,6 @@ function DowSelector({
 
 export default function SharedCalendarFormModal({ calendar, onClose, onSave }: Props) {
   const isEditing = !!calendar;
-  const expiresAtRef = useRef<HTMLInputElement>(null);
-  const inputsRef = useRef<Record<string, HTMLInputElement | null>>({});
-
 
   const [name, setName] = useState(calendar?.name ?? "");
   const [showPrice, setShowPrice] = useState(calendar?.showPrice ?? false);
@@ -165,7 +162,6 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Controlar qué vivienda se muestra expandida al configurar tramos
   const [expandedPropertyId, setExpandedPropertyId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -175,22 +171,18 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
         const props = d.properties ?? [];
         setProperties(props);
         if (props.length > 0 && !isEditing) {
-          // Por defecto no abrimos nada o abrimos la primera seleccionada
         }
       });
   }, [isEditing]);
 
-  // Al cambiar la selección de viviendas, limpiar las reglas de viviendas deseleccionadas
   useEffect(() => {
     setPriceRules((prev) => prev.filter((r) => selectedIds.includes(r.propertyId)));
   }, [selectedIds]);
 
-  // Si la vivienda que estaba expandida deja de estar seleccionada, expandimos la primera seleccionada
   useEffect(() => {
     if (expandedPropertyId && !selectedIds.includes(expandedPropertyId)) {
       setExpandedPropertyId(selectedIds[0] || null);
     } else if (!expandedPropertyId && selectedIds.length > 0 && priceRules.length === 0) {
-      // Opcional: expande por defecto solo al inicio si no hay nada activo
       setExpandedPropertyId(selectedIds[0]);
     }
   }, [selectedIds]);
@@ -219,7 +211,6 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
       if (isNaN(price) || price <= 0) return "El precio por noche debe ser mayor que 0.";
     }
 
-    // Validación de solapamientos agrupando por propertyId
     const rulesByProperty: Record<string, DraftRule[]> = {};
     for (const r of priceRules) {
       if (!rulesByProperty[r.propertyId]) {
@@ -313,7 +304,6 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
     onSave();
   };
 
-  // Filtrar viviendas seleccionadas para la UI de precios por tramos
   const selectedProperties = properties.filter((p) => selectedIds.includes(p.id));
 
   return (
@@ -383,30 +373,12 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
               <label className="block text-xs font-semibold text-slate-400 mb-1.5">
                 Fecha de expiración <span className="text-slate-600">(opcional)</span>
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  ref={expiresAtRef}
-                  value={expiresAt}
-                  onChange={(e) => setExpiresAt(e.target.value)}
-                  min={new Date().toISOString().split("T")[0]}
-                  className="w-full pl-3 pr-9 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      expiresAtRef.current?.showPicker();
-                    } catch (e) {
-                      expiresAtRef.current?.focus();
-                    }
-                  }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
-                  title="Seleccionar fecha"
-                >
-                  <Calendar className="w-4 h-4" />
-                </button>
-              </div>
+              <DatePicker
+                value={expiresAt}
+                onChange={setExpiresAt}
+                min={new Date().toISOString().split("T")[0]}
+                triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
+              />
             </div>
 
             <div className="border border-slate-800 rounded-2xl overflow-hidden">
@@ -459,7 +431,6 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
 
                       return (
                         <div key={prop.id} className="border border-slate-800 rounded-xl overflow-hidden">
-                          {/* Cabecera del acordeón de la vivienda */}
                           <button
                             type="button"
                             onClick={() => setExpandedPropertyId(isExpanded ? null : prop.id)}
@@ -480,7 +451,6 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                             </svg>
                           </button>
 
-                          {/* Lista de tramos de la vivienda (solo si está expandido) */}
                           {isExpanded && (
                             <div className="p-3 bg-slate-900/60 border-t border-slate-800 space-y-3">
                               <div className="flex justify-end">
@@ -528,56 +498,20 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                                   <div className="grid grid-cols-2 gap-2">
                                     <div>
                                       <label className="block text-[10px] text-slate-500 mb-1">Desde</label>
-                                      <div className="relative">
-                                        <input
-                                          type="date"
-                                          ref={(el) => { inputsRef.current[rule.id + "-start"] = el; }}
-                                          value={rule.startDate}
-                                          onChange={(e) => updateRule(rule.id, "startDate", e.target.value)}
-                                          className="w-full pl-3 pr-9 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-                                        />
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            try {
-                                              inputsRef.current[rule.id + "-start"]?.showPicker();
-                                            } catch (e) {
-                                              inputsRef.current[rule.id + "-start"]?.focus();
-                                            }
-                                          }}
-                                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
-                                          title="Seleccionar fecha"
-                                        >
-                                          <Calendar className="w-3.5 h-3.5" />
-                                        </button>
-                                      </div>
+                                      <DatePicker
+                                        value={rule.startDate}
+                                        onChange={(v) => updateRule(rule.id, "startDate", v)}
+                                        triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                      />
                                     </div>
                                     <div>
                                       <label className="block text-[10px] text-slate-500 mb-1">Hasta</label>
-                                      <div className="relative">
-                                        <input
-                                          type="date"
-                                          ref={(el) => { inputsRef.current[rule.id + "-end"] = el; }}
-                                          value={rule.endDate}
-                                          min={rule.startDate}
-                                          onChange={(e) => updateRule(rule.id, "endDate", e.target.value)}
-                                          className="w-full pl-3 pr-9 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-                                        />
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            try {
-                                              inputsRef.current[rule.id + "-end"]?.showPicker();
-                                            } catch (e) {
-                                              inputsRef.current[rule.id + "-end"]?.focus();
-                                            }
-                                          }}
-                                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
-                                          title="Seleccionar fecha"
-                                        >
-                                          <Calendar className="w-3.5 h-3.5" />
-                                        </button>
-                                      </div>
+                                      <DatePicker
+                                        value={rule.endDate}
+                                        onChange={(v) => updateRule(rule.id, "endDate", v)}
+                                        min={rule.startDate}
+                                        triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                      />
                                     </div>
                                   </div>
 

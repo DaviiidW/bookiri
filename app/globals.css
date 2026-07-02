@@ -25,7 +25,3 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Hide native browser calendar icon inside date inputs */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  display: none !important;
-}

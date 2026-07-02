@@ -24,7 +24,7 @@ export default function BookingFormModal({
   defaultCheckOutDate = "",
   defaultPropertyId = "",
 }: BookingFormModalProps) {
-  const { state, actions, computedValues, refs } = useBookingForm({
+  const { state, actions, computedValues } = useBookingForm({
     isOpen,
     booking,
     defaultCheckInDate,
@@ -75,7 +75,6 @@ export default function BookingFormModal({
                   state={state}
                   computedValues={computedValues}
                   actions={actions}
-                  refs={refs}
                   onClose={onClose}
                 />
               )

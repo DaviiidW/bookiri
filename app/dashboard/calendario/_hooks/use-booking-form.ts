@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { splitBookingIntoTramos, calculatePriceFromTramos, Tramo, Season } from "@/lib/price-calculator";
 
 export interface Property {
@@ -61,11 +61,6 @@ export function useBookingForm({
   onClose,
 }: UseBookingFormProps) {
   const isEditMode = !!booking;
-
-  const checkInRef = useRef<HTMLInputElement>(null);
-  const checkOutRef = useRef<HTMLInputElement>(null);
-  const depDateRef = useRef<HTMLInputElement>(null);
-  const fullDateRef = useRef<HTMLInputElement>(null);
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -404,11 +399,5 @@ export function useBookingForm({
       isOverCapacity,
       pendingAmount,
     },
-    refs: {
-      checkInRef,
-      checkOutRef,
-      depDateRef,
-      fullDateRef,
-    }
   };
 }

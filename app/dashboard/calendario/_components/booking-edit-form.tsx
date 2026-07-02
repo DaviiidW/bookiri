@@ -2,6 +2,7 @@ import React from "react";
 import { AlertTriangle, Users, User, Calendar, Euro, DollarSign, Clock, FileText, Loader2 } from "lucide-react";
 import { Property } from "../_hooks/use-booking-form";
 import { Tramo } from "@/lib/price-calculator";
+import DatePicker from "@/components/date-picker";
 
 interface BookingEditFormProps {
   state: {
@@ -62,12 +63,6 @@ interface BookingEditFormProps {
     handleModeToggle: (v: "AUTOMATIC" | "MANUAL") => void;
     handleSubmit: (e: React.FormEvent) => void;
   };
-  refs: {
-    checkInRef: React.RefObject<HTMLInputElement | null>;
-    checkOutRef: React.RefObject<HTMLInputElement | null>;
-    depDateRef: React.RefObject<HTMLInputElement | null>;
-    fullDateRef: React.RefObject<HTMLInputElement | null>;
-  };
   onClose: () => void;
 }
 
@@ -75,7 +70,6 @@ export default function BookingEditForm({
   state,
   computedValues,
   actions,
-  refs,
   onClose,
 }: BookingEditFormProps) {
   return (
@@ -208,65 +202,23 @@ export default function BookingEditForm({
               <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Entrada
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  ref={refs.checkInRef}
-                  value={state.checkInDate}
-                  disabled={state.isReadOnly}
-                  onChange={(e) => actions.setCheckInDate(e.target.value)}
-                  className="w-full pl-3 pr-9 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
-                  required
-                />
-                {!state.isReadOnly && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      try {
-                        refs.checkInRef.current?.showPicker();
-                      } catch (e) {
-                        refs.checkInRef.current?.focus();
-                      }
-                    }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-450 hover:text-zinc-800 cursor-pointer"
-                  >
-                    <Calendar className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
+              <DatePicker
+                value={state.checkInDate}
+                onChange={actions.setCheckInDate}
+                disabled={state.isReadOnly}
+              />
             </div>
 
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Salida
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  ref={refs.checkOutRef}
-                  value={state.checkOutDate}
-                  disabled={state.isReadOnly}
-                  onChange={(e) => actions.setCheckOutDate(e.target.value)}
-                  className="w-full pl-3 pr-9 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
-                  required
-                  min={state.checkInDate}
-                />
-                {!state.isReadOnly && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      try {
-                        refs.checkOutRef.current?.showPicker();
-                      } catch (e) {
-                        refs.checkOutRef.current?.focus();
-                      }
-                    }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-450 hover:text-zinc-800 cursor-pointer"
-                  >
-                    <Calendar className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
+              <DatePicker
+                value={state.checkOutDate}
+                onChange={actions.setCheckOutDate}
+                disabled={state.isReadOnly}
+                min={state.checkInDate}
+              />
             </div>
           </div>
 
@@ -462,32 +414,12 @@ export default function BookingEditForm({
                   <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
                     Fecha de Pago de la Señal
                   </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      ref={refs.depDateRef}
-                      value={state.depositPaidAt}
-                      disabled={state.isReadOnly}
-                      onChange={(e) => actions.setDepositPaidAt(e.target.value)}
-                      className="w-full pl-3 pr-9 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
-                      required
-                    />
-                    {!state.isReadOnly && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          try {
-                            refs.depDateRef.current?.showPicker();
-                          } catch (e) {
-                            refs.depDateRef.current?.focus();
-                          }
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-450 hover:text-zinc-800"
-                      >
-                        <Calendar className="w-3 h-3" />
-                      </button>
-                    )}
-                  </div>
+                  <DatePicker
+                    value={state.depositPaidAt}
+                    onChange={actions.setDepositPaidAt}
+                    disabled={state.isReadOnly}
+                    triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
+                  />
                 </div>
               )}
             </div>
@@ -508,32 +440,12 @@ export default function BookingEditForm({
                   <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
                     Fecha de Pago Completo
                   </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      ref={refs.fullDateRef}
-                      value={state.fullyPaidAt}
-                      disabled={state.isReadOnly}
-                      onChange={(e) => actions.setFullyPaidAt(e.target.value)}
-                      className="w-full pl-3 pr-9 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
-                      required
-                    />
-                    {!state.isReadOnly && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          try {
-                            refs.fullDateRef.current?.showPicker();
-                          } catch (e) {
-                            refs.fullDateRef.current?.focus();
-                          }
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-450 hover:text-zinc-800"
-                      >
-                        <Calendar className="w-3 h-3" />
-                      </button>
-                    )}
-                  </div>
+                  <DatePicker
+                    value={state.fullyPaidAt}
+                    onChange={actions.setFullyPaidAt}
+                    disabled={state.isReadOnly}
+                    triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
+                  />
                 </div>
               )}
             </div>

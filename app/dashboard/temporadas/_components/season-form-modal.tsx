@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { X, Loader2, ChevronRight, AlertTriangle, RefreshCw, DollarSign, Lock, Calendar, ArrowRight, Palette } from "lucide-react";
 import { Season } from "./season-card";
 import { formatShortDate, getNights } from "@/app/dashboard/calendario/_types";
+import DatePicker from "@/components/date-picker";
 
 interface Property {
   id: string;
@@ -60,9 +61,6 @@ export default function SeasonFormModal({
   properties,
 }: SeasonFormModalProps) {
   const isEditMode = !!season;
-
-  const startDateRef = useRef<HTMLInputElement>(null);
-  const endDateRef = useRef<HTMLInputElement>(null);
 
   const [propertyId, setPropertyId] = useState("");
   const [name, setName] = useState("");
@@ -497,60 +495,22 @@ export default function SeasonFormModal({
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                     Fecha de inicio
                   </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      ref={startDateRef}
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full pl-3 pr-9 py-2 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        try {
-                          startDateRef.current?.showPicker();
-                        } catch (e) {
-                          startDateRef.current?.focus();
-                        }
-                      }}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
-                      title="Seleccionar fecha"
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  <DatePicker
+                    value={startDate}
+                    onChange={setStartDate}
+                    triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-2 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                     Fecha de fin
                   </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      ref={endDateRef}
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full pl-3 pr-9 py-2 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                      required
-                      min={startDate}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        try {
-                          endDateRef.current?.showPicker();
-                        } catch (e) {
-                          endDateRef.current?.focus();
-                        }
-                      }}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-200 cursor-pointer"
-                      title="Seleccionar fecha"
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  <DatePicker
+                    value={endDate}
+                    onChange={setEndDate}
+                    min={startDate}
+                    triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-2 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
                 </div>
               </div>
 
