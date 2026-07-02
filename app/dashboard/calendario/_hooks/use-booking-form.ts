@@ -217,6 +217,12 @@ export function useBookingForm({
     }
   }, [fullyPaid]);
 
+  useEffect(() => {
+    if (fullyPaid) {
+      setDepositPaid(true);
+    }
+  }, [fullyPaid]);
+
   const selectedProperty = properties.find((p) => p.id === propertyId);
   const guestsNum = parseInt(guestsTotal, 10) || 0;
   const isOverCapacity = selectedProperty && guestsNum > selectedProperty.maxGuests;

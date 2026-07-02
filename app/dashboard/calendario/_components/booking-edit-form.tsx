@@ -404,7 +404,7 @@ export default function BookingEditForm({
                 <input
                   type="checkbox"
                   checked={state.depositPaid}
-                  disabled={state.isReadOnly}
+                  disabled={state.isReadOnly || state.fullyPaid}
                   onChange={(e) => actions.setDepositPaid(e.target.checked)}
                   className="w-4 h-4 rounded border-zinc-300 bg-white text-indigo-600 focus:ring-0 focus:ring-offset-0 cursor-pointer disabled:opacity-50"
                 />

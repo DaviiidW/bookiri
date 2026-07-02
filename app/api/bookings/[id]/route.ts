@@ -119,10 +119,14 @@ export async function PUT(req: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "El importe de la señal no puede ser mayor que el precio total" }, { status: 400 });
     }
 
-    if (depositPaid && !depositPaidAt) {
+    const isFullyPaid = !!fullyPaid;
+    const isDepositPaid = isFullyPaid || !!depositPaid;
+    const effectiveDepositPaidAt = isDepositPaid ? (depositPaidAt || fullyPaidAt || null) : null;
+
+    if (isDepositPaid && !effectiveDepositPaidAt) {
       return NextResponse.json({ error: "La fecha de pago de la señal es obligatoria si está pagada" }, { status: 400 });
     }
-    if (fullyPaid && !fullyPaidAt) {
+    if (isFullyPaid && !fullyPaidAt) {
       return NextResponse.json({ error: "La fecha de pago completo es obligatoria si está pagada" }, { status: 400 });
     }
 
@@ -163,10 +167,10 @@ export async function PUT(req: Request, { params }: RouteParams) {
           notes: notes || null,
           totalPrice: priceTotalNum,
           depositAmount: depositAmtNum,
-          depositPaid: !!depositPaid,
-          depositPaidAt: depositPaid && depositPaidAt ? new Date(depositPaidAt) : null,
-          fullyPaid: !!fullyPaid,
-          fullyPaidAt: fullyPaid && fullyPaidAt ? new Date(fullyPaidAt) : null,
+          depositPaid: isDepositPaid,
+          depositPaidAt: effectiveDepositPaidAt ? new Date(effectiveDepositPaidAt) : null,
+          fullyPaid: isFullyPaid,
+          fullyPaidAt: isFullyPaid && fullyPaidAt ? new Date(fullyPaidAt) : null,
         },
       });
 
