@@ -112,27 +112,27 @@ export default function CalendarToolbar({
           <>
             <button
               onClick={onPrev}
-              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer"
               title="Anterior"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={onToday}
-              className="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors cursor-pointer"
+              className="px-3 py-1.5 text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-750 rounded-lg transition-colors cursor-pointer"
             >
               Hoy
             </button>
             <button
               onClick={onNext}
-              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer"
               title="Siguiente"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </>
         )}
-        <h2 className="text-sm font-bold text-white capitalize ml-1">{periodLabel}</h2>
+        <h2 className="text-sm font-bold text-zinc-800 capitalize ml-1">{periodLabel}</h2>
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
@@ -142,7 +142,7 @@ export default function CalendarToolbar({
           onPropertyChange={onPropertyChange}
         />
 
-        <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
+        <div className="flex items-center bg-zinc-100 border border-zinc-200 rounded-lg p-0.5">
           {VIEW_OPTIONS.map((opt) => (
             <button
               key={opt.key}
@@ -150,8 +150,8 @@ export default function CalendarToolbar({
               title={opt.label}
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer
                 ${view === opt.key
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60"
                 }`}
             >
               {opt.icon}

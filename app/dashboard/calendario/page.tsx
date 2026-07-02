@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function CalendarioPage() {
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white">
+    <div className="w-full text-zinc-800">
+      <div className="mb-4">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-100">
           Calendario
         </h1>
       </div>

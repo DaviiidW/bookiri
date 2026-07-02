@@ -25,11 +25,11 @@ export default function BookingChip({ booking, compact = false, onClick }: Booki
   return (
     <div
       onClick={onClick}
-      className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold text-white truncate max-w-full leading-tight cursor-pointer hover:scale-[1.02] transition-transform"
+      className="px-1.5 py-0.5 rounded-md text-[10px] font-bold truncate max-w-full leading-tight cursor-pointer hover:scale-[1.02] transition-transform"
       style={{
-        backgroundColor: `${bgColor}33`,
+        backgroundColor: `${bgColor}18`,
         borderLeft: `3px solid ${bgColor}`,
-        color: "white",
+        color: bgColor,
       }}
       title={`${booking.guestName} – ${booking.propertyName}`}
     >

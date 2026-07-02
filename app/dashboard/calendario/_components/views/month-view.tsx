@@ -59,7 +59,7 @@ export default function MonthView({ currentDate, properties, onSelectBooking, se
         {WEEK_DAYS.map((day) => (
           <div
             key={day}
-            className="text-center text-[10px] font-bold uppercase tracking-wider text-slate-500 py-1"
+            className="text-center text-[10px] font-bold uppercase tracking-wider text-zinc-500 py-1"
           >
             {day}
           </div>
@@ -111,17 +111,17 @@ export default function MonthView({ currentDate, properties, onSelectBooking, se
         })}
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-slate-800/60">
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+      <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-zinc-200">
+        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/60" />
           Disponible
         </div>
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550">
+          <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
           No disponible
         </div>
         {properties.map((p) => (
-          <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-slate-400">
+          <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-zinc-550">
             <span
               className="w-2.5 h-2.5 rounded-full"
               style={{ backgroundColor: p.color }}

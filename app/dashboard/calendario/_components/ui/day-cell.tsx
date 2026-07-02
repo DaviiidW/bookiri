@@ -37,21 +37,21 @@ export default function DayCell({
   const visibleBookings = bookings.slice(0, MAX_VISIBLE);
   const overflow = bookings.length - MAX_VISIBLE;
 
-  let bgClass = "bg-slate-900/20";
-  if (!available) bgClass = "bg-slate-950/60";
-  if (hasBookings) bgClass = "bg-slate-900/30";
+  let bgClass = "bg-zinc-50/50";
+  if (!available) bgClass = "bg-zinc-100";
+  if (hasBookings) bgClass = "bg-white";
   if (!isCurrentMonth) bgClass = "bg-transparent";
 
   return (
     <div
       onClick={() => isCurrentMonth && onSelectDate?.(date)}
       className={`
-        relative flex flex-col min-h-[80px] p-1.5 rounded-lg border transition-colors duration-100
-        ${isCurrentMonth ? "border-slate-800/60" : "border-transparent"}
+        relative flex flex-col min-h-[80px] p-1.5 rounded-lg border transition-all duration-100
+        ${isCurrentMonth ? "border-zinc-200" : "border-transparent"}
         ${bgClass}
-        ${isToday ? "ring-2 ring-indigo-500 ring-offset-1 ring-offset-slate-950" : ""}
-        ${isSelected && isCurrentMonth && !isToday ? "ring-2 ring-indigo-400 ring-offset-1 ring-offset-slate-950" : ""}
-        ${!isCurrentMonth ? "opacity-30" : "cursor-pointer"}
+        ${isToday ? "ring-2 ring-indigo-500 ring-offset-1 ring-offset-white" : ""}
+        ${isSelected && isCurrentMonth && !isToday ? "ring-2 ring-indigo-400 ring-offset-1 ring-offset-white" : ""}
+        ${!isCurrentMonth ? "opacity-30" : "cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30"}
       `}
     >
       <div className="flex items-center justify-between mb-1">
@@ -59,8 +59,8 @@ export default function DayCell({
           className={`
             text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full
             ${isToday ? "bg-indigo-500 text-white" : ""}
-            ${isPast && isCurrentMonth && !isToday ? "text-slate-500" : "text-slate-300"}
-            ${!isCurrentMonth ? "text-slate-600" : ""}
+            ${isPast && isCurrentMonth && !isToday ? "text-zinc-400" : "text-zinc-700"}
+            ${!isCurrentMonth ? "text-zinc-300" : ""}
           `}
         >
           {date.getDate()}
@@ -68,7 +68,7 @@ export default function DayCell({
 
         {isCurrentMonth && !hasBookings && (
           <span
-            className={`w-1.5 h-1.5 rounded-full ${available ? "bg-emerald-500/60" : "bg-slate-700"}`}
+            className={`w-1.5 h-1.5 rounded-full ${available ? "bg-emerald-500/60" : "bg-zinc-300"}`}
             title={available ? "Disponible" : "No disponible"}
           />
         )}
@@ -82,7 +82,7 @@ export default function DayCell({
                 <BookingChip key={b.id} booking={b} compact onClick={() => onSelectBooking?.(b)} />
               ))}
               {bookings.length > 3 && (
-                <span className="text-[9px] text-slate-400">+{bookings.length - 3}</span>
+                <span className="text-[9px] text-zinc-400">+{bookings.length - 3}</span>
               )}
             </div>
           ) : (
@@ -91,7 +91,7 @@ export default function DayCell({
                 <BookingChip key={b.id} booking={b} onClick={() => onSelectBooking?.(b)} />
               ))}
               {overflow > 0 && (
-                <span className="text-[9px] text-slate-400 pl-1 mt-0.5">+{overflow} más</span>
+                <span className="text-[9px] text-zinc-400 pl-1 mt-0.5">+{overflow} más</span>
               )}
             </>
           )}
@@ -99,7 +99,7 @@ export default function DayCell({
       )}
 
       {isCurrentMonth && !available && !hasBookings && (
-        <span className="text-[9px] text-slate-600 mt-auto">No disp.</span>
+        <span className="text-[9px] text-zinc-450 mt-auto">No disp.</span>
       )}
     </div>
   );

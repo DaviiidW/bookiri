@@ -48,27 +48,29 @@ export default function CalendarShell() {
   };
 
   return (
-    <div className="space-y-5">
-      <CalendarToolbar
-        view={view}
-        onViewChange={setView}
-        currentDate={currentDate}
-        onPrev={goToPrev}
-        onNext={goToNext}
-        onToday={goToToday}
-        properties={allProperties}
-        selectedPropertyId={selectedPropertyId}
-        onPropertyChange={setSelectedPropertyId}
-      />
+    <div className="space-y-4">
+      <div className="bg-white border border-zinc-200 rounded-2xl p-3 md:p-4">
+        <CalendarToolbar
+          view={view}
+          onViewChange={setView}
+          currentDate={currentDate}
+          onPrev={goToPrev}
+          onNext={goToNext}
+          onToday={goToToday}
+          properties={allProperties}
+          selectedPropertyId={selectedPropertyId}
+          onPropertyChange={setSelectedPropertyId}
+        />
+      </div>
 
-      <div className="bg-slate-900/40 border border-slate-900 rounded-3xl p-4 md:p-6 shadow-xl min-h-[400px]">
+      <div className="bg-white border border-zinc-200 rounded-2xl p-3 md:p-5 min-h-[400px]">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400 gap-3">
+          <div className="flex flex-col items-center justify-center py-20 text-zinc-400 gap-3">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
             <p className="text-sm font-medium">Cargando calendario...</p>
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center py-16 text-red-400 gap-3">
+          <div className="flex flex-col items-center justify-center py-16 text-red-500 gap-3">
             <AlertCircle className="w-8 h-8" />
             <p className="text-sm">{error}</p>
           </div>

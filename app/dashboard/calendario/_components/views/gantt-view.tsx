@@ -37,7 +37,7 @@ export default function GanttView({ currentDate, properties, onSelectBooking }: 
           className="grid gap-px mb-1"
           style={{ gridTemplateColumns: `140px repeat(${days.length}, minmax(28px, 1fr))` }}
         >
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 py-2">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 px-2 py-2">
             Vivienda
           </div>
           {days.map((day, i) => {
@@ -46,7 +46,7 @@ export default function GanttView({ currentDate, properties, onSelectBooking }: 
               <div
                 key={i}
                 className={`text-center text-[9px] font-bold py-1.5 rounded-sm
-                  ${isToday ? "bg-indigo-500 text-white" : "text-slate-500 bg-slate-900/20"}
+                  ${isToday ? "bg-indigo-500 text-white" : "text-zinc-500 bg-zinc-100"}
                 `}
               >
                 {day.getDate()}
@@ -59,15 +59,15 @@ export default function GanttView({ currentDate, properties, onSelectBooking }: 
           return (
             <div key={property.id} className="mb-1">
               <div
-                className="grid gap-px"
+                className="grid gap-px bg-zinc-200/50 rounded-lg overflow-hidden"
                 style={{ gridTemplateColumns: `140px repeat(${days.length}, minmax(28px, 1fr))` }}
               >
-                <div className="flex items-center gap-2 px-2 py-2 bg-slate-900/30 rounded-l-lg">
+                <div className="flex items-center gap-2 px-2 py-2 bg-zinc-50 rounded-l-lg">
                   <span
                     className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: property.color }}
                   />
-                  <span className="text-xs font-semibold text-slate-200 truncate">
+                  <span className="text-xs font-semibold text-zinc-800 truncate">
                     {property.name}
                   </span>
                 </div>
@@ -80,8 +80,8 @@ export default function GanttView({ currentDate, properties, onSelectBooking }: 
                     <div
                       key={di}
                       className={`relative h-10
-                        ${!available ? "bg-slate-950/70" : "bg-slate-900/20"}
-                        ${isToday ? "bg-indigo-950/30" : ""}
+                        ${!available ? "bg-zinc-200" : "bg-white"}
+                        ${isToday ? "bg-indigo-50/50" : ""}
                         ${di === days.length - 1 ? "rounded-r-lg" : ""}
                       `}
                     >
@@ -127,14 +127,14 @@ export default function GanttView({ currentDate, properties, onSelectBooking }: 
                         style={{
                           left: `${leftPct}%`,
                           width: `${widthPct}%`,
-                          backgroundColor: `${property.color}30`,
-                          border: `1px solid ${property.color}80`,
+                          backgroundColor: `${property.color}15`,
+                          border: `1px solid ${property.color}50`,
                         }}
                         title={`${booking.guestName} · ${formatShortDate(booking.checkInDate)} – ${formatShortDate(booking.checkOutDate)} (${getNights(booking.checkInDate, booking.checkOutDate)} noches)`}
                         onClick={() => onSelectBooking?.(booking)}
                       >
                         <span
-                          className="text-[9px] font-semibold truncate"
+                          className="text-[9px] font-bold truncate"
                           style={{ color: property.color }}
                         >
                           {booking.guestName}
@@ -149,23 +149,23 @@ export default function GanttView({ currentDate, properties, onSelectBooking }: 
         })}
 
         {properties.length === 0 && (
-          <div className="text-center py-12 text-slate-500 text-sm">
+          <div className="text-center py-12 text-zinc-400 text-sm">
             No hay viviendas para mostrar
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-slate-800/60 mt-3">
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
-            <span className="w-3 h-2 rounded-sm bg-slate-950/70 border border-slate-800/40" />
+        <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-zinc-200 mt-3">
+          <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
+            <span className="w-3 h-2 rounded-sm bg-zinc-200 border border-zinc-300" />
             No disponible
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
-            <span className="w-3 h-2 rounded-sm bg-slate-900/20 border border-slate-800/40" />
+          <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
+            <span className="w-3 h-2 rounded-sm bg-white border border-zinc-200" />
             Disponible
           </div>
           {properties.map((p) => (
-            <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-slate-400">
-              <span className="w-3 h-2 rounded-sm" style={{ backgroundColor: `${p.color}40`, border: `1px solid ${p.color}80` }} />
+            <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-zinc-500">
+              <span className="w-3 h-2 rounded-sm" style={{ backgroundColor: `${p.color}20`, border: `1px solid ${p.color}50` }} />
               {p.name}
             </div>
           ))}
