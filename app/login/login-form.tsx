@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -41,44 +42,68 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-950 text-slate-100 relative overflow-hidden font-sans">
-      <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-900/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-violet-900/20 blur-[120px] pointer-events-none" />
+    <div className="min-h-screen w-full flex bg-white text-zinc-900 font-sans">
+      <div className="hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden border-r border-zinc-200">
+        <div
+          className="absolute inset-0 h-full w-full bg-white"
+          style={{ background: "radial-gradient(125% 125% at 50% 10%, #fff 40%, #2563eb 100%)" }}
+        ></div>
 
-      <div className="w-full max-w-md px-6 z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-sm">
-            Bookiri
-          </h1>
-          <p className="mt-2 text-slate-400 text-sm">
-            Gestión de reservas de viviendas vacacionales
-          </p>
+        <div className="relative z-10 flex items-center justify-center">
+          <Image
+            src="/Logo_Bookiri-Photoroom.webp"
+            alt="Bookiri Logo"
+            width={350}
+            height={350}
+            className="object-contain drop-shadow-xl"
+            priority
+          />
         </div>
+      </div>
 
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800/60 rounded-3xl p-8 shadow-2xl transition-all duration-300 hover:border-slate-700/50">
-          <h2 className="text-xl font-bold text-slate-100 mb-6 text-center">
-            Iniciar Sesión
-          </h2>
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-between p-8 relative min-h-screen lg:min-h-0">
+        <div className="hidden lg:block h-1"></div>
+        
+        <div className="w-full max-w-[380px] flex flex-col relative z-10 my-auto">
+
+          <div className="text-center mb-10 flex flex-col items-center">
+            <div className="lg:hidden mb-6">
+              <Image
+                src="/Logo_Bookiri-Photoroom.webp"
+                alt="Bookiri Logo"
+                width={150}
+                height={150}
+                className="object-contain"
+                priority
+              />
+            </div>
+            <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 mb-2">
+              Iniciar sesión
+            </h1>
+            <p className="text-zinc-500 text-sm">
+              ¡Bienvenido! Por favor, inicia sesión para continuar.
+            </p>
+          </div>
 
           {registered && (
-            <div className="mb-4 p-4 rounded-xl bg-emerald-950/40 border border-emerald-800/50 text-emerald-200 text-sm text-center">
+            <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm text-center">
               ¡Cuenta creada con éxito! Introduce tus credenciales para acceder.
             </div>
           )}
 
           {error && (
-            <div className="mb-4 p-4 rounded-xl bg-red-950/40 border border-red-800/50 text-red-200 text-sm text-center animate-shake">
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm text-center animate-shake">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
+            <div className="space-y-2">
               <label
                 htmlFor="email"
-                className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                className="block text-sm font-medium text-zinc-700"
               >
-                Correo Electrónico
+                Correo electrónico
               </label>
               <input
                 id="email"
@@ -86,15 +111,15 @@ export default function LoginForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ejemplo@bookiri.com"
-                className="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200"
+                placeholder="Introduce el correo electrónico"
+                className="w-full px-4 py-3 bg-white border border-zinc-300 rounded-xl text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors shadow-sm"
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <label
                 htmlFor="password"
-                className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                className="block text-sm font-medium text-zinc-700"
               >
                 Contraseña
               </label>
@@ -104,33 +129,41 @@ export default function LoginForm() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200"
+                placeholder="Introduce la contraseña"
+                className="w-full px-4 py-3 bg-white border border-zinc-300 rounded-xl text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors shadow-sm"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-650/20 active:scale-[0.98] transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none mt-2 flex items-center justify-center"
+              className="w-full py-3 px-4 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-medium rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none mt-4 flex items-center justify-center"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-slate-300 border-t-white rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                "Entrar"
+                "Continuar"
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <span className="text-xs text-slate-400">¿No tienes cuenta? </span>
+          <div className="mt-8 text-center text-sm">
+            <span className="text-zinc-500">¿No tienes una cuenta? </span>
             <Link
               href="/register"
-              className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
             >
               Regístrate
             </Link>
           </div>
+        </div>
+
+        <div className="text-xs text-zinc-400 flex gap-3 mt-8 pb-4 lg:pb-0">
+          <span>© Bookiri</span>
+          <span>·</span>
+          <Link href="#" className="hover:text-zinc-600 transition-colors">Privacidad</Link>
+          <span>·</span>
+          <Link href="#" className="hover:text-zinc-600 transition-colors">Términos</Link>
         </div>
       </div>
     </div>
