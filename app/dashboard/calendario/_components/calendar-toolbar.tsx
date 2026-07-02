@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, CalendarDays, AlignLeft, BarChart2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, ChevronDown, CalendarDays, AlignLeft, BarChart2 } from "lucide-react";
 import {
   CalendarView,
   CalendarProperty,
@@ -24,6 +25,70 @@ const VIEW_OPTIONS: { key: CalendarView; label: string; icon: React.ReactNode }[
   { key: "gantt", label: "Gantt", icon: <BarChart2 className="w-3.5 h-3.5" /> },
   { key: "list", label: "Lista", icon: <AlignLeft className="w-3.5 h-3.5" /> },
 ];
+
+function PropertySelect({
+  properties,
+  selectedPropertyId,
+  onPropertyChange,
+}: {
+  properties: CalendarProperty[];
+  selectedPropertyId: string | null;
+  onPropertyChange: (id: string | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  const options = [{ id: null as string | null, name: "Todas las viviendas" }, ...properties];
+  const selectedLabel = options.find((o) => o.id === selectedPropertyId)?.name ?? "Todas las viviendas";
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center justify-between gap-2 min-w-[180px] text-xs bg-white border border-zinc-200 text-zinc-800 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+      >
+        <span className="truncate">{selectedLabel}</span>
+        <ChevronDown
+          className={`w-3.5 h-3.5 text-zinc-400 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 right-0 top-full mt-1 min-w-full bg-white border border-zinc-200 rounded-lg shadow-lg p-1.5 z-50">
+          {options.map((opt) => (
+            <button
+              key={opt.id ?? ""}
+              type="button"
+              onClick={() => {
+                onPropertyChange(opt.id);
+                setOpen(false);
+              }}
+              className={`w-full text-left px-3 py-2 rounded-md text-xs whitespace-nowrap cursor-pointer transition-colors
+                ${opt.id === selectedPropertyId
+                  ? "bg-zinc-200 text-zinc-900 font-semibold"
+                  : "text-zinc-700 hover:bg-zinc-100"
+                }`}
+            >
+              {opt.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function CalendarToolbar({
   view,
@@ -71,18 +136,11 @@ export default function CalendarToolbar({
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
-        <select
-          value={selectedPropertyId ?? ""}
-          onChange={(e) => onPropertyChange(e.target.value || null)}
-          className="text-xs bg-slate-900 border border-slate-800 text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
-        >
-          <option value="">Todas las viviendas</option>
-          {properties.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
-          ))}
-        </select>
+        <PropertySelect
+          properties={properties}
+          selectedPropertyId={selectedPropertyId}
+          onPropertyChange={onPropertyChange}
+        />
 
         <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
           {VIEW_OPTIONS.map((opt) => (
