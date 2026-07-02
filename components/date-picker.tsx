@@ -176,7 +176,15 @@ export default function DatePicker({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1 w-72 bg-white border border-zinc-200 rounded-xl shadow-lg p-3 z-50">
+        <>
+          <div
+            className="fixed inset-0 z-[60] bg-black/40"
+            onClick={() => {
+              setOpen(false);
+              setView("days");
+            }}
+          />
+          <div className="fixed left-1/2 top-1/2 z-[70] w-[calc(100vw-2rem)] max-w-72 -translate-x-1/2 -translate-y-1/2 bg-white border border-zinc-200 rounded-xl shadow-lg p-3">
           <div className="flex items-center justify-between mb-3">
             <button
               type="button"
@@ -296,7 +304,8 @@ export default function DatePicker({
               })}
             </div>
           )}
-        </div>
+          </div>
+        </>
       )}
     </div>
   );
