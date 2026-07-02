@@ -253,15 +253,15 @@ export default function BookingEditForm({
             <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
               <Euro className="w-3.5 h-3.5 text-indigo-500" /> Tarifas y Temporadas
             </h3>
-            <div className="flex items-center bg-zinc-150 rounded-lg p-0.5 border border-zinc-200">
+            <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-zinc-200">
               <button
                 type="button"
                 disabled={state.isReadOnly}
                 onClick={() => actions.handleModeToggle("AUTOMATIC")}
-                className={`px-2 py-0.5 rounded text-[10px] font-semibold cursor-pointer ${
+                className={`px-3 py-1 rounded-md text-[10px] font-semibold cursor-pointer transition-colors ${
                   state.priceCalculationMode === "AUTOMATIC"
-                    ? "bg-indigo-650 text-white"
-                    : "text-zinc-550 hover:text-zinc-900"
+                    ? "bg-zinc-300 text-zinc-900"
+                    : "text-zinc-500 hover:text-zinc-800"
                 } disabled:opacity-50`}
               >
                 Auto
@@ -270,10 +270,10 @@ export default function BookingEditForm({
                 type="button"
                 disabled={state.isReadOnly}
                 onClick={() => actions.handleModeToggle("MANUAL")}
-                className={`px-2 py-0.5 rounded text-[10px] font-semibold cursor-pointer ${
+                className={`px-3 py-1 rounded-md text-[10px] font-semibold cursor-pointer transition-colors ${
                   state.priceCalculationMode === "MANUAL"
-                    ? "bg-indigo-650 text-white"
-                    : "text-zinc-550 hover:text-zinc-900"
+                    ? "bg-zinc-300 text-zinc-900"
+                    : "text-zinc-500 hover:text-zinc-800"
                 } disabled:opacity-50`}
               >
                 Manual
@@ -338,22 +338,26 @@ export default function BookingEditForm({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+              <div className="p-3 rounded-xl bg-white border border-zinc-300 hover:border-zinc-400 transition-colors flex flex-col justify-between focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+                <label htmlFor="totalPrice" className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
                   Precio Total (€)
                 </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={state.totalPrice}
-                  disabled={state.isReadOnly}
-                  onChange={(e) => {
-                    actions.setTotalPrice(e.target.value);
-                  }}
-                  className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
-                  required
-                />
+                <div className="flex items-baseline gap-1 mt-1">
+                  <input
+                    id="totalPrice"
+                    type="number"
+                    min="0"
+                    step="10"
+                    value={state.totalPrice}
+                    disabled={state.isReadOnly}
+                    onChange={(e) => {
+                      actions.setTotalPrice(e.target.value);
+                    }}
+                    className="w-full min-w-0 bg-transparent text-lg font-extrabold text-zinc-850 focus:outline-none disabled:text-zinc-400"
+                    required
+                  />
+                  <span className="text-lg font-extrabold text-zinc-850">€</span>
+                </div>
               </div>
             </div>
           )}
@@ -365,28 +369,32 @@ export default function BookingEditForm({
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex flex-col justify-between">
+            <div className="p-3 rounded-xl bg-zinc-200 border border-zinc-300 flex flex-col justify-between">
               <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Precio Total</span>
               <span className="text-lg font-extrabold text-zinc-850 mt-1">{parseFloat(state.totalPrice || "0").toFixed(2)}€</span>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+            <div className="p-3 rounded-xl bg-white border border-zinc-300 hover:border-zinc-400 transition-colors flex flex-col justify-between focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+              <label htmlFor="depositAmount" className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
                 Importe de la Señal
               </label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={state.depositAmount}
-                disabled={state.isReadOnly}
-                onChange={(e) => actions.setDepositAmount(e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-zinc-100 disabled:border-zinc-200 disabled:text-zinc-400"
-                required
-              />
+              <div className="flex items-baseline gap-1 mt-1">
+                <input
+                  id="depositAmount"
+                  type="number"
+                  min="0"
+                  step="10"
+                  value={state.depositAmount}
+                  disabled={state.isReadOnly}
+                  onChange={(e) => actions.setDepositAmount(e.target.value)}
+                  className="w-full min-w-0 bg-transparent text-lg font-extrabold text-zinc-850 focus:outline-none disabled:text-zinc-400"
+                  required
+                />
+                <span className="text-lg font-extrabold text-zinc-850">€</span>
+              </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex flex-col justify-between">
+            <div className="p-3 rounded-xl bg-zinc-200 border border-zinc-300 flex flex-col justify-between">
               <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Importe Pendiente</span>
               <span className="text-lg font-extrabold text-indigo-650 mt-1">{computedValues.pendingAmount.toFixed(2)}€</span>
             </div>
@@ -394,7 +402,7 @@ export default function BookingEditForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-3">
-              <div className="flex items-center justify-between">
+              <label className={`flex items-center justify-between ${state.isReadOnly || state.fullyPaid ? "cursor-not-allowed" : "cursor-pointer"}`}>
                 <span className="text-xs font-bold text-zinc-800">Señal Pagada</span>
                 <input
                   type="checkbox"
@@ -403,7 +411,7 @@ export default function BookingEditForm({
                   onChange={(e) => actions.setDepositPaid(e.target.checked)}
                   className="w-4 h-4 rounded border-zinc-300 bg-white text-indigo-600 focus:ring-0 focus:ring-offset-0 cursor-pointer disabled:opacity-50"
                 />
-              </div>
+              </label>
               {state.depositPaid && (
                 <div className="space-y-1.5">
                   <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
@@ -420,7 +428,7 @@ export default function BookingEditForm({
             </div>
 
             <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-3">
-              <div className="flex items-center justify-between">
+              <label className="flex items-center justify-between cursor-pointer">
                 <span className="text-xs font-bold text-zinc-800">Totalmente Pagado</span>
                 <input
                   type="checkbox"
@@ -429,7 +437,7 @@ export default function BookingEditForm({
                   onChange={(e) => actions.setFullyPaid(e.target.checked)}
                   className="w-4 h-4 rounded border-zinc-300 bg-white text-indigo-600 focus:ring-0 focus:ring-offset-0 cursor-pointer disabled:opacity-50"
                 />
-              </div>
+              </label>
               {state.fullyPaid && (
                 <div className="space-y-1.5">
                   <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
