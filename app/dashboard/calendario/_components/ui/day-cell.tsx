@@ -10,6 +10,8 @@ interface DayCellProps {
   allPeriods: CalendarAvailabilityPeriod[];
   isCompact?: boolean;
   onSelectBooking?: (booking: CalendarBooking) => void;
+  isSelected?: boolean;
+  onSelectDate?: (date: Date) => void;
 }
 
 export default function DayCell({
@@ -19,6 +21,8 @@ export default function DayCell({
   allPeriods,
   isCompact = false,
   onSelectBooking,
+  isSelected = false,
+  onSelectDate,
 }: DayCellProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -40,12 +44,14 @@ export default function DayCell({
 
   return (
     <div
+      onClick={() => isCurrentMonth && onSelectDate?.(date)}
       className={`
         relative flex flex-col min-h-[80px] p-1.5 rounded-lg border transition-colors duration-100
         ${isCurrentMonth ? "border-slate-800/60" : "border-transparent"}
         ${bgClass}
         ${isToday ? "ring-2 ring-indigo-500 ring-offset-1 ring-offset-slate-950" : ""}
-        ${!isCurrentMonth ? "opacity-30" : ""}
+        ${isSelected && isCurrentMonth && !isToday ? "ring-2 ring-indigo-400 ring-offset-1 ring-offset-slate-950" : ""}
+        ${!isCurrentMonth ? "opacity-30" : "cursor-pointer"}
       `}
     >
       <div className="flex items-center justify-between mb-1">

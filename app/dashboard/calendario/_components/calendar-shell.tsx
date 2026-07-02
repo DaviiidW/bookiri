@@ -8,11 +8,13 @@ import MonthView from "./views/month-view";
 import GanttView from "./views/gantt-view";
 import ListView from "./views/list-view";
 import BookingFormModal from "./booking-form-modal";
+import DayDetailPanel from "./ui/day-detail-panel";
 import { CalendarBooking } from "../_types";
 
 export default function CalendarShell() {
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const {
     allProperties,
@@ -77,6 +79,12 @@ export default function CalendarShell() {
                 currentDate={currentDate}
                 properties={filteredProperties}
                 onSelectBooking={handleSelectBooking}
+                selectedDate={selectedDate}
+                onSelectDate={(d) => {
+                  setSelectedDate((prev) =>
+                    prev?.toDateString() === d.toDateString() ? null : d
+                  );
+                }}
               />
             )}
 
@@ -97,6 +105,14 @@ export default function CalendarShell() {
           </>
         )}
       </div>
+
+      {view === "month" && selectedDate && !isLoading && !error && (
+        <DayDetailPanel
+          selectedDate={selectedDate}
+          properties={filteredProperties}
+          onSelectBooking={handleSelectBooking}
+        />
+      )}
 
       <button
         onClick={() => {

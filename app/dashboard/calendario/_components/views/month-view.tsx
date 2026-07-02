@@ -14,11 +14,13 @@ interface MonthViewProps {
   currentDate: Date;
   properties: CalendarProperty[];
   onSelectBooking?: (booking: CalendarBooking) => void;
+  selectedDate?: Date | null;
+  onSelectDate?: (date: Date) => void;
 }
 
 const WEEK_DAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
-export default function MonthView({ currentDate, properties, onSelectBooking }: MonthViewProps) {
+export default function MonthView({ currentDate, properties, onSelectBooking, selectedDate, onSelectDate }: MonthViewProps) {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -67,6 +69,10 @@ export default function MonthView({ currentDate, properties, onSelectBooking }: 
       <div className="grid grid-cols-7 gap-1">
         {gridDays.map((date, i) => {
           const isCurrentMonth = date.getMonth() === month;
+          const isSel = selectedDate != null &&
+            date.getFullYear() === selectedDate.getFullYear() &&
+            date.getMonth() === selectedDate.getMonth() &&
+            date.getDate() === selectedDate.getDate();
           return (
             <div key={i} className="hidden sm:block">
               <DayCell
@@ -75,6 +81,8 @@ export default function MonthView({ currentDate, properties, onSelectBooking }: 
                 allBookings={allBookings}
                 allPeriods={allPeriods}
                 onSelectBooking={onSelectBooking}
+                isSelected={isSel}
+                onSelectDate={onSelectDate}
               />
             </div>
           );
@@ -82,6 +90,10 @@ export default function MonthView({ currentDate, properties, onSelectBooking }: 
 
         {gridDays.map((date, i) => {
           const isCurrentMonth = date.getMonth() === month;
+          const isSel = selectedDate != null &&
+            date.getFullYear() === selectedDate.getFullYear() &&
+            date.getMonth() === selectedDate.getMonth() &&
+            date.getDate() === selectedDate.getDate();
           return (
             <div key={`m-${i}`} className="block sm:hidden">
               <DayCell
@@ -90,6 +102,8 @@ export default function MonthView({ currentDate, properties, onSelectBooking }: 
                 allBookings={allBookings}
                 allPeriods={allPeriods}
                 onSelectBooking={onSelectBooking}
+                isSelected={isSel}
+                onSelectDate={onSelectDate}
                 isCompact
               />
             </div>
