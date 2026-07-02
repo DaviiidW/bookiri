@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import DashboardClient from "../dashboard-client";
+import CuentaClient from "./cuenta-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,5 +15,5 @@ export default async function CuentaPage() {
     redirect("/login");
   }
 
-  return <DashboardClient session={session} />;
+  return <CuentaClient session={session} />;
 }
