@@ -519,8 +519,8 @@ export default function SeasonFormModal({
                   </label>
                   <input
                     type="number"
-                    min="0.01"
-                    step="0.01"
+                    min="0"
+                    step="10"
                     value={pricePerNight}
                     onChange={(e) => setPricePerNight(e.target.value)}
                     placeholder="0.00"
