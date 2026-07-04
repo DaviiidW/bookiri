@@ -84,15 +84,12 @@ export default function PublicCalendarShell({ token }: Props) {
     <div className="min-h-screen bg-white text-zinc-800">
       <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-violet-500" />
             <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
               Calendario de disponibilidad
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-            {data.name ?? "Disponibilidad"}
-          </h1>
         </div>
 
         {multipleProperties && (
