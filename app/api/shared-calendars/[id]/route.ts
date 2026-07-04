@@ -46,7 +46,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
   try {
     const body = await req.json();
-    const { name, propertyIds, showPrice, showSeasonPrices, expiresAt, isActive, viewType, priceRules } = body;
+    const { name, propertyIds, showPrice, showSeasonPrices, expiresAt, viewType, priceRules } = body;
 
     if (propertyIds !== undefined && propertyIds.length === 0) {
       return NextResponse.json(
@@ -90,7 +90,6 @@ export async function PUT(req: NextRequest, { params }: Params) {
           ...(showPrice !== undefined && { showPrice }),
           ...(showSeasonPrices !== undefined && { showSeasonPrices }),
           ...(expiresAt !== undefined && { expiresAt: expiresAt ? new Date(expiresAt) : null }),
-          ...(isActive !== undefined && { isActive }),
           ...(viewType !== undefined && { viewType }),
           ...(propertyIds && {
             properties: { create: propertyIds.map((pid: string) => ({ propertyId: pid })) },

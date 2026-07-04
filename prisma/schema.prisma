@@ -142,7 +142,6 @@ model SharedCalendar {
   name      String?
 
   expiresAt DateTime?
-  isActive  Boolean @default(true)
 
   showPrice        Boolean @default(false)
   showSeasonPrices Boolean @default(false)

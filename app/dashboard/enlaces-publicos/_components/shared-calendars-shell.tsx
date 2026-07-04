@@ -28,7 +28,6 @@ export interface SharedCalendar {
   name: string | null;
   showPrice: boolean;
   showSeasonPrices: boolean;
-  isActive: boolean;
   expiresAt: string | null;
   viewType: string;
   createdAt: string;
@@ -62,15 +61,6 @@ export default function SharedCalendarsShell() {
   const handleEdit = (calendar: SharedCalendar) => {
     setEditingCalendar(calendar);
     setShowModal(true);
-  };
-
-  const handleRevoke = async (id: string) => {
-    await fetch(`/api/shared-calendars/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: false }),
-    });
-    load();
   };
 
   const handleDelete = async (id: string) => {
@@ -134,7 +124,6 @@ export default function SharedCalendarsShell() {
               key={cal.id}
               calendar={cal}
               onEdit={handleEdit}
-              onRevoke={handleRevoke}
               onDelete={handleDelete}
             />
           ))}

@@ -81,7 +81,6 @@ export async function POST(req: NextRequest) {
         showPrice: showPrice ?? false,
         showSeasonPrices: showSeasonPrices ?? false,
         expiresAt: expiresAt ? new Date(expiresAt) : null,
-        isActive: true,
         viewType: viewType ?? "MONTH",
         properties: { create: propertyIds.map((id: string) => ({ propertyId: id })) },
         priceRules: {

@@ -6,19 +6,12 @@ import type { SharedCalendar } from "./shared-calendars-shell";
 interface Props {
   calendar: SharedCalendar;
   onEdit: (c: SharedCalendar) => void;
-  onRevoke: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
 function StatusBadge({ calendar }: { calendar: SharedCalendar }) {
   const expired =
     calendar.expiresAt && new Date(calendar.expiresAt) < new Date();
-  if (!calendar.isActive)
-    return (
-      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-red-50 text-red-700 border border-red-200">
-        Revocado
-      </span>
-    );
   if (expired)
     return (
       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-amber-50 text-amber-700 border border-amber-200">
@@ -32,7 +25,7 @@ function StatusBadge({ calendar }: { calendar: SharedCalendar }) {
   );
 }
 
-export default function SharedCalendarCard({ calendar, onEdit, onRevoke, onDelete }: Props) {
+export default function SharedCalendarCard({ calendar, onEdit, onDelete }: Props) {
   const [copied, setCopied] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -110,17 +103,6 @@ export default function SharedCalendarCard({ calendar, onEdit, onRevoke, onDelet
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
           </button>
-          {calendar.isActive && (
-            <button
-              onClick={() => onRevoke(calendar.id)}
-              title="Revocar acceso"
-              className="p-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-600 hover:text-amber-700 transition-all cursor-pointer"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-              </svg>
-            </button>
-          )}
           <button
             onClick={() => setShowDeleteConfirm(true)}
             title="Eliminar"

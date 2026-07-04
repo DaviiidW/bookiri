@@ -51,9 +51,6 @@ export async function GET(_req: NextRequest, { params }: Params) {
     if (!calendar) {
       return NextResponse.json({ error: "Enlace no encontrado" }, { status: 404 });
     }
-    if (!calendar.isActive) {
-      return NextResponse.json({ error: "Enlace revocado" }, { status: 410 });
-    }
     if (calendar.expiresAt && calendar.expiresAt < new Date()) {
       return NextResponse.json({ error: "Enlace expirado" }, { status: 410 });
     }
