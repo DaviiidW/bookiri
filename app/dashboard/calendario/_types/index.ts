@@ -1,3 +1,6 @@
+export { toMidnightMs, getNights, formatShortDate } from "@/lib/date-format";
+import { toMidnightMs } from "@/lib/date-format";
+
 export type CalendarView = "month" | "gantt" | "list";
 
 export interface CalendarAvailabilityPeriod {
@@ -47,12 +50,6 @@ export function getBookingsForDay(date: Date, bookings: CalendarBooking[]): Cale
   });
 }
 
-export function toMidnightMs(date: Date): number {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d.getTime();
-}
-
 export function getDaysInMonth(year: number, month: number): Date[] {
   const days: Date[] = [];
   const date = new Date(year, month, 1);
@@ -68,16 +65,6 @@ export function formatDateKey(date: Date): string {
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
-}
-
-export function getNights(checkIn: string, checkOut: string): number {
-  const a = toMidnightMs(new Date(checkIn));
-  const b = toMidnightMs(new Date(checkOut));
-  return Math.round((b - a) / (1000 * 60 * 60 * 24));
-}
-
-export function formatShortDate(date: Date | string, locale = "es-ES"): string {
-  return new Date(date).toLocaleDateString(locale, { day: "numeric", month: "short" });
 }
 
 export function formatMonthLabel(date: Date, locale = "es-ES"): string {

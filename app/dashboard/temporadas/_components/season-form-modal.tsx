@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Loader2, ChevronRight, AlertTriangle, RefreshCw, DollarSign, Lock, Calendar, ArrowRight, Palette } from "lucide-react";
 import { Season } from "./season-card";
-import { formatShortDate, getNights } from "@/app/dashboard/calendario/_types";
+import { formatShortDate, getNights } from "@/lib/date-format";
 import DatePicker from "@/components/date-picker";
 import SelectDropdown from "@/components/select-dropdown";
 

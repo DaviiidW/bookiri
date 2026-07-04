@@ -1,7 +1,7 @@
 "use client";
 
 import { Calendar, Bed, Euro, Edit2, Trash2 } from "lucide-react";
-import { formatShortDate } from "@/app/dashboard/calendario/_types";
+import { formatShortDate } from "@/lib/date-format";
 
 export interface Season {
   id: string;

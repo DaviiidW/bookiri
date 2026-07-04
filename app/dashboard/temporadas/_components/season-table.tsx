@@ -2,7 +2,7 @@
 
 import { Edit2, Trash2 } from "lucide-react";
 import { Season } from "./season-card";
-import { formatShortDate } from "@/app/dashboard/calendario/_types";
+import { formatShortDate } from "@/lib/date-format";
 
 interface SeasonTableProps {
   seasons: Season[];

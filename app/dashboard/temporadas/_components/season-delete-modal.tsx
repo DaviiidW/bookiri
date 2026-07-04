@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { X, AlertTriangle, Loader2, Calendar, ArrowRight } from "lucide-react";
 import { Season } from "./season-card";
-import { formatShortDate, getNights } from "@/app/dashboard/calendario/_types";
+import { formatShortDate, getNights } from "@/lib/date-format";
 
 interface AffectedBooking {
   id: string;
