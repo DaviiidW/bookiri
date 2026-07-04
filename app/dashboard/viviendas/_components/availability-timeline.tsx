@@ -1,6 +1,7 @@
 "use client";
 
-import { Calendar, Clock, Edit2, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Clock, Edit2, Trash2, Check, X } from "lucide-react";
 
 interface Period {
   id?: string;
@@ -20,6 +21,8 @@ export default function AvailabilityTimeline({
   onEdit,
   onDelete,
 }: AvailabilityTimelineProps) {
+  const [confirmingIndex, setConfirmingIndex] = useState<number | null>(null);
+
   const sortedPeriods = [...periods].sort(
     (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
   );
@@ -88,20 +91,45 @@ export default function AvailabilityTimeline({
               </div>
 
               <div className="flex items-center gap-1.5 self-end sm:self-center">
-                <button
-                  onClick={() => onEdit(period, originalIndex)}
-                  className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
-                  title="Editar periodo"
-                >
-                  <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => onDelete(originalIndex)}
-                  className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                  title="Eliminar periodo"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                {confirmingIndex === originalIndex ? (
+                  <>
+                    <span className="text-xs font-medium text-zinc-500 mr-1">¿Eliminar?</span>
+                    <button
+                      onClick={() => {
+                        onDelete(originalIndex);
+                        setConfirmingIndex(null);
+                      }}
+                      className="p-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors cursor-pointer"
+                      title="Confirmar eliminación"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setConfirmingIndex(null)}
+                      className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+                      title="Cancelar"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => onEdit(period, originalIndex)}
+                      className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+                      title="Editar periodo"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setConfirmingIndex(originalIndex)}
+                      className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                      title="Eliminar periodo"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
