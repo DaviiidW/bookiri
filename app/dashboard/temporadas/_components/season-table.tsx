@@ -25,27 +25,27 @@ export default function SeasonTable({ seasons, onEdit, onDelete }: SeasonTablePr
   const StatusBadge = ({ season }: { season: Season }) => {
     const status = getStatus(season);
     if (status === "active") return (
-      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/50 text-emerald-400 border border-emerald-800/40">
+      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
         Activa
       </span>
     );
     if (status === "past") return (
-      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-500">
+      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-500">
         Pasada
       </span>
     );
     return (
-      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-950/40 text-indigo-400 border border-indigo-900/40">
+      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
         Próxima
       </span>
     );
   };
 
   return (
-    <div className="rounded-2xl border border-slate-800/60 overflow-x-auto">
+    <div className="rounded-2xl border border-zinc-200 overflow-x-auto">
       <table className="w-full min-w-[750px] text-xs">
-        <thead className="bg-slate-950/60">
-          <tr className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+        <thead className="bg-zinc-50">
+          <tr className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">
             <th className="px-4 py-3 text-left">Temporada</th>
             <th className="px-4 py-3 text-left">Vivienda</th>
             <th className="px-4 py-3 text-left">Fecha inicio</th>
@@ -56,11 +56,11 @@ export default function SeasonTable({ seasons, onEdit, onDelete }: SeasonTablePr
             <th className="px-4 py-3 text-center">Acciones</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-800/40">
+        <tbody className="divide-y divide-zinc-200">
           {seasons.map((season) => (
             <tr
               key={season.id}
-              className="hover:bg-slate-900/30 transition-colors"
+              className="hover:bg-zinc-50 transition-colors"
             >
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export default function SeasonTable({ seasons, onEdit, onDelete }: SeasonTablePr
                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                     style={{ backgroundColor: season.color }}
                   />
-                  <span className="font-semibold text-slate-200 truncate max-w-[140px]">
+                  <span className="font-semibold text-zinc-800 truncate max-w-[140px]">
                     {season.name}
                   </span>
                 </div>
@@ -80,30 +80,30 @@ export default function SeasonTable({ seasons, onEdit, onDelete }: SeasonTablePr
                     className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: season.property.color }}
                   />
-                  <span className="text-slate-400 truncate max-w-[120px]">
+                  <span className="text-zinc-500 truncate max-w-[120px]">
                     {season.property.name}
                   </span>
                 </div>
               </td>
 
-              <td className="px-4 py-3 text-slate-400">{formatShortDate(season.startDate)}</td>
-              <td className="px-4 py-3 text-slate-400">{formatShortDate(season.endDate)}</td>
-              <td className="px-4 py-3 text-right font-semibold text-slate-200">{season.pricePerNight}€</td>
-              <td className="px-4 py-3 text-center text-slate-400">{season.minimumStayNights}</td>
+              <td className="px-4 py-3 text-zinc-500">{formatShortDate(season.startDate)}</td>
+              <td className="px-4 py-3 text-zinc-500">{formatShortDate(season.endDate)}</td>
+              <td className="px-4 py-3 text-right font-semibold text-zinc-800">{season.pricePerNight}€</td>
+              <td className="px-4 py-3 text-center text-zinc-500">{season.minimumStayNights}</td>
               <td className="px-4 py-3 text-center"><StatusBadge season={season} /></td>
 
               <td className="px-4 py-3">
                 <div className="flex items-center justify-center gap-2">
                   <button
                     onClick={() => onEdit(season)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
                     title="Editar temporada"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => onDelete(season)}
-                    className="p-1.5 rounded-lg text-red-500 hover:text-red-400 hover:bg-red-950/30 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                     title="Eliminar temporada"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

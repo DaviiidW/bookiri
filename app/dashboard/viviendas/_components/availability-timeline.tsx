@@ -51,16 +51,16 @@ export default function AvailabilityTimeline({
 
   if (periods.length === 0) {
     return (
-      <div className="py-8 text-center border border-dashed border-slate-800 rounded-2xl bg-slate-950/20 text-slate-500">
-        <Clock className="w-8 h-8 mx-auto text-slate-650 mb-3" />
+      <div className="py-8 text-center border border-dashed border-zinc-300 rounded-2xl bg-zinc-50 text-zinc-500">
+        <Clock className="w-8 h-8 mx-auto text-zinc-400 mb-3" />
         <p className="text-sm font-medium">No hay periodos de disponibilidad configurados.</p>
-        <p className="text-xs text-slate-550 mt-1">La vivienda no estará disponible para recibir reservas.</p>
+        <p className="text-xs text-zinc-400 mt-1">La vivienda no estará disponible para recibir reservas.</p>
       </div>
     );
   }
 
   return (
-    <div className="relative border-l border-slate-800 ml-4 pl-6 space-y-6 py-2">
+    <div className="relative border-l border-zinc-200 ml-4 pl-6 space-y-6 py-2">
       {sortedPeriods.map((period, index) => {
         const originalIndex = periods.findIndex(
           p => p.startDate === period.startDate && p.endDate === period.endDate && p.description === period.description
@@ -69,20 +69,20 @@ export default function AvailabilityTimeline({
 
         return (
           <div key={index} className="relative group animate-in fade-in duration-200">
-            <div className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full border-4 border-slate-950 bg-indigo-500 ring-4 ring-indigo-950/40" />
+            <div className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full border-4 border-white bg-indigo-500 ring-4 ring-indigo-100" />
 
-            <div className="bg-slate-900/40 hover:bg-slate-900/60 border border-slate-850 hover:border-slate-800 rounded-2xl p-4 transition-all duration-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-300 rounded-2xl p-4 transition-all duration-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <h4 className="font-bold text-sm text-slate-100">
+                  <h4 className="font-bold text-sm text-zinc-800">
                     {period.description?.trim() || "Periodo de disponibilidad"}
                   </h4>
                 </div>
 
-                <div className="flex items-center gap-2 text-slate-400 text-xs">
-                  <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <div className="flex items-center gap-2 text-zinc-500 text-xs">
+                  <Calendar className="w-3.5 h-3.5 text-zinc-400" />
                   <span>
-                    Del <strong className="text-slate-200">{formatDate(period.startDate)}</strong> al <strong className="text-slate-200">{formatDate(period.endDate)}</strong>
+                    Del <strong className="text-zinc-700">{formatDate(period.startDate)}</strong> al <strong className="text-zinc-700">{formatDate(period.endDate)}</strong>
                   </span>
                 </div>
               </div>
@@ -90,14 +90,14 @@ export default function AvailabilityTimeline({
               <div className="flex items-center gap-1.5 self-end sm:self-center">
                 <button
                   onClick={() => onEdit(period, originalIndex)}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                  className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
                   title="Editar periodo"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => onDelete(originalIndex)}
-                  className="p-2 text-red-400 hover:text-red-300 hover:bg-red-950/30 rounded-lg transition-colors cursor-pointer"
+                  className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                   title="Eliminar periodo"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

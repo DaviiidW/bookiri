@@ -14,8 +14,8 @@ export default function PublicCalendarLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className="dark">
-      <body className={`${inter.className} bg-slate-950 antialiased`}>
+    <html lang="es">
+      <body className={`${inter.className} bg-white antialiased`}>
         {children}
       </body>
     </html>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, AlertTriangle, Calendar, Check, Trash2, Edit2, AlertCircle } from "lucide-react";
+import { X, AlertTriangle, Calendar, Trash2 } from "lucide-react";
 
 interface Period {
   id?: string;
@@ -124,32 +124,32 @@ export default function ConflictResolutionModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl relative max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
-        
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white border border-zinc-200 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl relative max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
           disabled={isSaving}
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-amber-950/60 border border-amber-850 rounded-xl text-amber-400 flex-shrink-0">
+          <div className="p-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-600 flex-shrink-0">
             <AlertTriangle className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">
+            <h3 className="text-xl font-bold text-zinc-900">
               Conflicto con Reservas Existentes
             </h3>
-            <p className="text-xs text-slate-450 mt-0.5">
+            <p className="text-xs text-zinc-500 mt-0.5">
               Se han detectado reservas cuyas fechas caen fuera de los periodos de disponibilidad propuestos.
             </p>
           </div>
         </div>
 
-        <div className="p-4 bg-amber-950/20 border border-amber-850/30 rounded-2xl text-xs text-amber-200 mb-6 leading-relaxed">
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800 mb-6 leading-relaxed">
           <strong>Acción requerida:</strong> Revisa las <strong>{bookings.length} reservas afectadas</strong> y decide individualmente qué hacer con cada una. No se guardará ningún cambio de disponibilidad hasta que confirmes la resolución de todos los conflictos.
         </div>
         <form onSubmit={handleSubmit} className="flex-1 min-h-0 flex flex-col space-y-6">
@@ -163,43 +163,43 @@ export default function ConflictResolutionModal({
               return (
                 <div
                   key={booking.id}
-                  className={`p-4 border rounded-2xl transition-all duration-200 bg-slate-950/30 flex flex-col gap-4 ${
+                  className={`p-4 border rounded-2xl transition-all duration-200 bg-white flex flex-col gap-4 ${
                     decision.action === "delete"
-                      ? "border-red-900/50 bg-red-950/5"
-                      : "border-slate-850"
+                      ? "border-red-200 bg-red-50/40"
+                      : "border-zinc-200"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
-                      <p className="font-bold text-sm text-slate-200">{booking.guestName}</p>
+                      <p className="font-bold text-sm text-zinc-800">{booking.guestName}</p>
                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <span className="flex items-center gap-1.5 text-slate-450 text-xs">
-                          <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                        <span className="flex items-center gap-1.5 text-zinc-500 text-xs">
+                          <Calendar className="w-3.5 h-3.5 text-zinc-400" />
                           <span>
                             Original: {formatDate(booking.checkInDate)} al {formatDate(booking.checkOutDate)}
                           </span>
                         </span>
-                        <span className="text-slate-650">·</span>
+                        <span className="text-zinc-300">·</span>
                         {isTotal ? (
-                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-red-950/40 text-red-400 border border-red-900/30">
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-red-50 text-red-700 border border-red-200">
                             AFECTACIÓN TOTAL
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-950/30 text-amber-400 border border-amber-900/20">
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
                             AFECTACIÓN PARCIAL
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-0.5">
+                    <div className="flex items-center bg-zinc-100 border border-zinc-200 rounded-xl p-0.5">
                       <button
                         type="button"
                         onClick={() => handleActionChange(booking.id, "keep")}
                         className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
                           decision.action === "keep"
-                            ? "bg-slate-800 text-slate-100"
-                            : "text-slate-450 hover:text-slate-200"
+                            ? "bg-white text-zinc-900 shadow-sm"
+                            : "text-zinc-500 hover:text-zinc-800"
                         }`}
                       >
                         Mantener
@@ -209,8 +209,8 @@ export default function ConflictResolutionModal({
                         onClick={() => handleActionChange(booking.id, "delete")}
                         className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                           decision.action === "delete"
-                            ? "bg-red-950/80 border border-red-850 text-red-400"
-                            : "text-slate-450 hover:text-red-400"
+                            ? "bg-red-50 border border-red-200 text-red-700"
+                            : "text-zinc-500 hover:text-red-600"
                         }`}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -220,7 +220,7 @@ export default function ConflictResolutionModal({
                   </div>
 
                   {decision.action === "delete" && (
-                    <p className="text-[10px] text-red-400 italic">
+                    <p className="text-[10px] text-red-600 italic">
                       * Esta reserva se cancelará y marcará como eliminada al guardar.
                     </p>
                   )}
@@ -229,11 +229,11 @@ export default function ConflictResolutionModal({
             })}
           </div>
 
-          <div className="flex items-center gap-3 justify-end pt-4 border-t border-slate-850 flex-shrink-0">
+          <div className="flex items-center gap-3 justify-end pt-4 border-t border-zinc-200 flex-shrink-0">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-450 hover:text-slate-250 transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer"
               disabled={isSaving}
             >
               Cancelar
@@ -241,10 +241,10 @@ export default function ConflictResolutionModal({
             <button
               type="submit"
               disabled={isSaving}
-              className="px-5 py-2.5 text-xs font-bold bg-indigo-650 hover:bg-indigo-550 text-white rounded-xl transition-colors cursor-pointer flex items-center justify-center min-w-[140px] shadow-lg shadow-indigo-950/20"
+              className="px-5 py-2.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors cursor-pointer flex items-center justify-center min-w-[140px] shadow-sm"
             >
               {isSaving ? (
-                <div className="w-4 h-4 border-2 border-slate-300 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
               ) : (
                 "Aplicar Resoluciones"
               )}

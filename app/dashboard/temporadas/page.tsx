@@ -108,7 +108,7 @@ export default function TemporadasPage() {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">Temporadas</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">Temporadas</h1>
         </div>
 
         <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export default function TemporadasPage() {
             <select
               value={selectedPropertyId ?? ""}
               onChange={(e) => setSelectedPropertyId(e.target.value || null)}
-              className="text-xs bg-slate-900 border border-slate-800 text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+              className="text-xs bg-white border border-zinc-200 text-zinc-800 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
             >
               <option value="">Todas las viviendas</option>
               {properties.map((p) => (
@@ -127,13 +127,13 @@ export default function TemporadasPage() {
             </select>
           )}
 
-          <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
+          <div className="flex items-center bg-white border border-zinc-200 rounded-lg p-0.5">
             <button
               onClick={() => setViewMode("card")}
               className={`p-1.5 rounded-md transition-all cursor-pointer ${
                 viewMode === "card"
                   ? "bg-indigo-600 text-white"
-                  : "text-slate-400 hover:text-slate-200"
+                  : "text-zinc-400 hover:text-zinc-800"
               }`}
               title="Vista tarjetas"
             >
@@ -144,7 +144,7 @@ export default function TemporadasPage() {
               className={`p-1.5 rounded-md transition-all cursor-pointer ${
                 viewMode === "table"
                   ? "bg-indigo-600 text-white"
-                  : "text-slate-400 hover:text-slate-200"
+                  : "text-zinc-400 hover:text-zinc-800"
               }`}
               title="Vista tabla"
             >
@@ -155,7 +155,7 @@ export default function TemporadasPage() {
           <button
             onClick={handleCreateClick}
             disabled={properties.length === 0}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-lg shadow-indigo-900/30"
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Nueva temporada
@@ -164,45 +164,45 @@ export default function TemporadasPage() {
       </div>
 
       {success && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-950/30 border border-emerald-800/40 text-emerald-400 text-xs font-medium animate-fade-in">
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium animate-fade-in">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           {success}
         </div>
       )}
       {error && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-950/30 border border-red-800/40 text-red-400 text-xs font-medium">
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           {error}
         </div>
       )}
 
       {!isLoading && properties.length === 0 && (
-        <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-800/30 text-amber-300 text-sm text-center">
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm text-center">
           Antes de crear temporadas, debes tener al menos una vivienda registrada.
         </div>
       )}
 
       {isLoading && (
-        <div className="flex items-center justify-center py-20 gap-3 text-slate-400">
+        <div className="flex items-center justify-center py-20 gap-3 text-zinc-500">
           <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
           <span className="text-sm">Cargando temporadas...</span>
         </div>
       )}
 
       {!isLoading && seasons.length === 0 && properties.length > 0 && (
-        <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-500">
-          <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800">
-            <Layers className="w-10 h-10 text-slate-600" />
+        <div className="flex flex-col items-center justify-center py-20 gap-4 text-zinc-500">
+          <div className="p-4 rounded-2xl bg-white border border-zinc-200">
+            <Layers className="w-10 h-10 text-zinc-400" />
           </div>
           <div className="text-center">
-            <p className="text-sm font-semibold text-slate-400">No hay temporadas</p>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-sm font-semibold text-zinc-600">No hay temporadas</p>
+            <p className="text-xs text-zinc-500 mt-1">
               Crea tu primera temporada para configurar precios y condiciones.
             </p>
           </div>
           <button
             onClick={handleCreateClick}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Crear primera temporada
@@ -219,22 +219,22 @@ export default function TemporadasPage() {
             const propSeasons = seasons.filter((s) => s.property.id === property.id);
 
             return (
-              <div key={property.id} className="space-y-4 pb-6 border-b border-slate-800/40 last:border-0 last:pb-0">
+              <div key={property.id} className="space-y-4 pb-6 border-b border-zinc-200 last:border-0 last:pb-0">
                 <div className="flex items-center gap-2">
                   <span
                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                     style={{ backgroundColor: property.color }}
                   />
-                  <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                  <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
                     {property.name}
                   </h2>
-                  <span className="text-[10px] text-slate-500 font-semibold bg-slate-950 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] text-zinc-500 font-semibold bg-zinc-100 px-2 py-0.5 rounded-full">
                     {propSeasons.length} {propSeasons.length === 1 ? "temporada" : "temporadas"}
                   </span>
                 </div>
 
                 {propSeasons.length === 0 ? (
-                  <p className="text-xs text-slate-500 italic pl-4">
+                  <p className="text-xs text-zinc-500 italic pl-4">
                     No hay temporadas configuradas para esta vivienda.
                   </p>
                 ) : (

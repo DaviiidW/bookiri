@@ -49,9 +49,9 @@ function DayCell({
   const dayNum = date.getDate();
 
   const statusStyles: Record<string, string> = {
-    available: "bg-emerald-950/40 border-emerald-800/30 text-emerald-300",
-    occupied: "bg-slate-800/60 border-slate-700/40 text-slate-500 opacity-60",
-    unavailable: "bg-red-950/30 border-red-900/30 text-red-500/60 opacity-60",
+    available: "bg-emerald-50 border-emerald-200 text-emerald-700",
+    occupied: "bg-zinc-100 border-zinc-200 text-zinc-400 opacity-60",
+    unavailable: "bg-red-50 border-red-200 text-red-400 opacity-60",
     past: "opacity-30",
   };
 
@@ -66,19 +66,19 @@ function DayCell({
       <span className="text-xs font-semibold leading-none mb-0.5">{dayNum}</span>
 
       {resolution?.source === "rule" && (
-        <span className="text-[9px] font-bold text-emerald-400/90 leading-tight text-center">
+        <span className="text-[9px] font-bold text-emerald-600 leading-tight text-center">
           {formatPrice(resolution.price)}
         </span>
       )}
 
       {resolution?.source === "season" && (
-        <span className="text-[9px] font-semibold text-sky-400/80 leading-tight text-center">
+        <span className="text-[9px] font-semibold text-sky-600 leading-tight text-center">
           {formatPrice(resolution.price)}
         </span>
       )}
 
       {status === "occupied" && (
-        <span className="text-[9px] text-slate-500 leading-tight">Ocupado</span>
+        <span className="text-[9px] text-zinc-400 leading-tight">Ocupado</span>
       )}
     </div>
   );
@@ -138,7 +138,7 @@ export default function PublicMonthView({
     <div className="space-y-4">
       <div className="grid grid-cols-7 gap-1">
         {WEEK_DAYS.map((d) => (
-          <div key={d} className="text-center text-[10px] font-bold uppercase tracking-wider text-slate-500 py-1">
+          <div key={d} className="text-center text-[10px] font-bold uppercase tracking-wider text-zinc-500 py-1">
             {d}
           </div>
         ))}
@@ -157,17 +157,17 @@ export default function PublicMonthView({
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-800/60">
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600/70" />
+      <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-zinc-200">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
           Disponible
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-600" />
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+          <span className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
           Ocupado
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-          <span className="w-2.5 h-2.5 rounded-full bg-red-900/70" />
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
           No disponible
         </div>
       </div>

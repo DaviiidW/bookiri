@@ -72,10 +72,10 @@ export default function PropertyTable({
   };
 
   return (
-    <div className="bg-slate-900/40 border border-slate-900 rounded-2xl overflow-hidden shadow-lg">
+    <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-900 text-left text-xs">
-          <thead className="bg-slate-950/60 uppercase tracking-wider font-bold text-slate-450 border-b border-slate-900">
+        <table className="min-w-full divide-y divide-zinc-200 text-left text-xs">
+          <thead className="bg-zinc-50 uppercase tracking-wider font-bold text-zinc-500 border-b border-zinc-200">
             <tr>
               <th className="px-6 py-4">Nombre de la Vivienda</th>
               <th className="px-6 py-4">Color</th>
@@ -85,18 +85,18 @@ export default function PropertyTable({
               <th className="px-6 py-4 text-right">Acciones</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-900/60 font-medium text-slate-300">
+          <tbody className="divide-y divide-zinc-200 font-medium text-zinc-700">
             {properties.map((p) => (
               <Fragment key={p.id}>
                 <tr
                   onClick={() => router.push(`/dashboard/viviendas/${p.id}`)}
-                  className="hover:bg-slate-900/20 transition-colors cursor-pointer group"
+                  className="hover:bg-zinc-50 transition-colors cursor-pointer group"
                 >
-                  <td className="px-6 py-4 font-bold text-white max-w-[200px] sm:max-w-none truncate sm:whitespace-normal group-hover:text-indigo-400 transition-colors">
+                  <td className="px-6 py-4 font-bold text-zinc-900 max-w-[200px] sm:max-w-none truncate sm:whitespace-normal group-hover:text-indigo-600 transition-colors">
                     <div className="flex items-center gap-2">
                       <button
                         onClick={(e) => onToggleExpand(e, p.id)}
-                        className="p-1 rounded-md hover:bg-slate-800 text-slate-450 hover:text-white transition-colors cursor-pointer select-none"
+                        className="p-1 rounded-md hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer select-none"
                         title="Ver periodos de disponibilidad"
                       >
                         {expandedProps[p.id] ? (
@@ -110,33 +110,33 @@ export default function PropertyTable({
                   </td>
                   <td className="px-6 py-4">
                     <div
-                      className="w-3.5 h-3.5 rounded-full border border-white/10"
+                      className="w-3.5 h-3.5 rounded-full border border-zinc-200"
                       style={{ backgroundColor: p.color }}
                     />
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-200">{p.maxGuests} huéspedes</span>
+                    <span className="text-zinc-700">{p.maxGuests} huéspedes</span>
                   </td>
                   <td className="px-6 py-4">
                     {p.isBookedNow ? (
-                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950/40 text-indigo-400 border border-indigo-900/30 animate-pulse">
+                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
                         Ocupado
                       </span>
                     ) : p.isAvailableNow ? (
-                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-900/30">
+                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Disponible
                       </span>
                     ) : (
-                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-slate-950/50 text-slate-550 border border-slate-900">
+                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200">
                         No disponible
                       </span>
                     )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="text-slate-200 font-bold">{p.futureBookingsCount}</span>
+                      <span className="text-zinc-700 font-bold">{p.futureBookingsCount}</span>
                       {p.nextBooking && (
-                        <span className="text-[9px] text-slate-450 mt-0.5 truncate max-w-[120px]">
+                        <span className="text-[9px] text-zinc-400 mt-0.5 truncate max-w-[120px]">
                           Sig: {formatDate(p.nextBooking.checkInDate)}
                         </span>
                       )}
@@ -149,7 +149,7 @@ export default function PropertyTable({
                           e.stopPropagation();
                           onEdit(p);
                         }}
-                        className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors cursor-pointer"
+                        className="p-1.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors cursor-pointer"
                         title="Editar"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -159,7 +159,7 @@ export default function PropertyTable({
                           e.stopPropagation();
                           onDelete(p);
                         }}
-                        className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/30 rounded-md transition-colors cursor-pointer"
+                        className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
                         title="Eliminar"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -171,13 +171,13 @@ export default function PropertyTable({
                 {expandedProps[p.id] && (
                   <tr
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-slate-950/20 text-slate-350 text-[10px]"
+                    className="bg-zinc-50 text-zinc-600 text-[10px]"
                   >
-                    <td colSpan={6} className="px-6 py-3 border-t border-slate-900 bg-slate-950/30">
+                    <td colSpan={6} className="px-6 py-3 border-t border-zinc-200 bg-zinc-50">
                       <div className="flex flex-wrap gap-4 items-center">
-                        <span className="font-bold text-slate-450 uppercase tracking-wider text-[9px]">Periodos de disponibilidad:</span>
+                        <span className="font-bold text-zinc-500 uppercase tracking-wider text-[9px]">Periodos de disponibilidad:</span>
                         {p.availabilityPeriods.length === 0 ? (
-                          <span className="italic text-slate-555">Sin periodos configurados</span>
+                          <span className="italic text-zinc-400">Sin periodos configurados</span>
                         ) : (
                           <div className="flex flex-wrap gap-2">
                             {[...p.availabilityPeriods]
@@ -185,9 +185,9 @@ export default function PropertyTable({
                               .map((period) => (
                                 <span
                                   key={period.id}
-                                  className="px-2.5 py-1 rounded bg-slate-900 border border-slate-850 font-medium"
+                                  className="px-2.5 py-1 rounded bg-white border border-zinc-200 font-medium"
                                 >
-                                  {period.description || "Disponible"}: <strong className="text-slate-200 font-mono text-[9px]">{formatDateSimple(period.startDate)} al {formatDateSimple(period.endDate)}</strong>
+                                  {period.description || "Disponible"}: <strong className="text-zinc-700 font-mono text-[9px]">{formatDateSimple(period.startDate)} al {formatDateSimple(period.endDate)}</strong>
                                 </span>
                               ))}
                           </div>

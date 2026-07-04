@@ -138,7 +138,7 @@ export default function CuentaClient({ session }: CuentaClientProps) {
               <button
                 onClick={handleDeleteAccount}
                 disabled={isDeleting || confirmText !== "ELIMINAR"}
-                className="px-5 py-2 text-xs font-semibold bg-red-600 hover:bg-red-750 text-white rounded-lg transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center justify-center min-w-[100px]"
+                className="px-5 py-2 text-xs font-semibold bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center justify-center min-w-[100px]"
               >
                 {isDeleting ? (
                   <div className="w-4 h-4 border-2 border-zinc-300 border-t-white rounded-full animate-spin" />

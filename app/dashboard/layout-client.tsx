@@ -41,7 +41,7 @@ export default function DashboardLayoutClient({
   const isExpanded = isSidebarOpen || isSidebarHovered;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-white text-zinc-900 flex flex-col font-sans overflow-x-hidden">
       <header className="lg:hidden h-10 w-full flex items-center px-4 bg-white border-b border-zinc-200 fixed top-0 left-0 right-0 z-30 flex-shrink-0">
         <button
           onClick={toggleSidebar}

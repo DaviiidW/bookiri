@@ -115,7 +115,7 @@ function DowSelector({
             className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer ${
               preset.active
                 ? "bg-violet-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
             }`}
           >
             {preset.label}
@@ -132,7 +132,7 @@ function DowSelector({
             className={`flex-1 h-8 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
               isSelected(d.iso)
                 ? "bg-violet-600/80 text-white"
-                : "bg-slate-800 text-slate-600 hover:bg-slate-700"
+                : "bg-zinc-100 text-zinc-400 hover:bg-zinc-200"
             }`}
           >
             {d.label}
@@ -307,15 +307,15 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
   const selectedProperties = properties.filter((p) => selectedIds.includes(p.id));
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
-        <div className="flex items-center justify-between p-6 border-b border-slate-800 shrink-0">
-          <h2 className="text-white font-bold text-lg">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white border border-zinc-200 rounded-3xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="flex items-center justify-between p-6 border-b border-zinc-200 shrink-0">
+          <h2 className="text-zinc-900 font-bold text-lg">
             {isEditing ? "Editar enlace" : "Nuevo enlace compartido"}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-slate-500 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
+            className="p-2 rounded-lg text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -326,24 +326,24 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
         <form onSubmit={handleSubmit} className="overflow-y-auto flex-1">
           <div className="p-6 space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                Nombre del enlace <span className="text-slate-600">(opcional)</span>
+              <label className="block text-xs font-semibold text-zinc-500 mb-1.5">
+                Nombre del enlace <span className="text-zinc-400">(opcional)</span>
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ej: Clientes verano 2025"
-                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-2">
-                Viviendas incluidas <span className="text-red-400">*</span>
+              <label className="block text-xs font-semibold text-zinc-500 mb-2">
+                Viviendas incluidas <span className="text-red-500">*</span>
               </label>
               {properties.length === 0 ? (
-                <p className="text-slate-500 text-sm">Cargando viviendas…</p>
+                <p className="text-zinc-500 text-sm">Cargando viviendas…</p>
               ) : (
                 <div className="grid grid-cols-1 gap-2">
                   {properties.map((p) => (
@@ -351,15 +351,15 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                       key={p.id}
                       className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                         selectedIds.includes(p.id)
-                          ? "border-violet-600/70 bg-violet-950/30"
-                          : "border-slate-800 bg-slate-950/30 hover:border-slate-700"
+                          ? "border-violet-300 bg-violet-50"
+                          : "border-zinc-200 bg-zinc-50 hover:border-zinc-300"
                       }`}
                     >
                       <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggleProperty(p.id)} className="sr-only" />
                       <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
-                      <span className="text-sm text-slate-200 flex-1">{p.name}</span>
+                      <span className="text-sm text-zinc-800 flex-1">{p.name}</span>
                       {selectedIds.includes(p.id) && (
-                        <svg className="w-4 h-4 text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-violet-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                         </svg>
                       )}
@@ -370,57 +370,57 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                Fecha de expiración <span className="text-slate-600">(opcional)</span>
+              <label className="block text-xs font-semibold text-zinc-500 mb-1.5">
+                Fecha de expiración <span className="text-zinc-400">(opcional)</span>
               </label>
               <DatePicker
                 value={expiresAt}
                 onChange={setExpiresAt}
                 min={new Date().toISOString().split("T")[0]}
-                triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
+                triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all text-sm"
               />
             </div>
 
-            <div className="border border-slate-800 rounded-2xl overflow-hidden">
+            <div className="border border-zinc-200 rounded-2xl overflow-hidden">
               <button
                 type="button"
                 onClick={() => { setShowPrice((v) => !v); }}
-                className="w-full flex items-center justify-between p-4 bg-slate-950/50 hover:bg-slate-800/30 transition-all cursor-pointer"
+                className="w-full flex items-center justify-between p-4 bg-zinc-50 hover:bg-zinc-100 transition-all cursor-pointer"
               >
                 <div className="text-left">
-                  <p className="text-sm text-slate-200 font-medium">Mostrar precios por noche</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Configura tramos con precio visible para el visitante.</p>
+                  <p className="text-sm text-zinc-800 font-medium">Mostrar precios por noche</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">Configura tramos con precio visible para el visitante.</p>
                 </div>
-                <div className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${showPrice ? "bg-violet-600" : "bg-slate-700"}`}>
+                <div className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${showPrice ? "bg-violet-600" : "bg-zinc-300"}`}>
                   <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${showPrice ? "translate-x-5" : "translate-x-0"}`} />
                 </div>
               </button>
 
               {showPrice && (
-                <div className="border-t border-slate-800 divide-y divide-slate-800/60">
+                <div className="border-t border-zinc-200 divide-y divide-zinc-200">
                   <button
                     type="button"
                     onClick={() => setShowSeasonPrices((v) => !v)}
-                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-800/20 transition-all cursor-pointer"
+                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-zinc-50 transition-all cursor-pointer"
                   >
                     <div className="text-left">
-                      <p className="text-xs text-slate-300 font-medium">Mostrar precios de temporada como base</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
+                      <p className="text-xs text-zinc-700 font-medium">Mostrar precios de temporada como base</p>
+                      <p className="text-[11px] text-zinc-500 mt-0.5">
                         Días sin tramo configurado mostrarán el precio de la temporada interna (en azul).
                       </p>
                     </div>
-                    <div className={`relative w-9 h-5 rounded-full transition-colors shrink-0 ml-3 ${showSeasonPrices ? "bg-sky-600" : "bg-slate-700"}`}>
+                    <div className={`relative w-9 h-5 rounded-full transition-colors shrink-0 ml-3 ${showSeasonPrices ? "bg-sky-600" : "bg-zinc-300"}`}>
                       <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${showSeasonPrices ? "translate-x-4" : "translate-x-0"}`} />
                     </div>
                   </button>
 
                   <div className="p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tramos de precio</p>
+                      <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Tramos de precio</p>
                     </div>
 
                     {selectedProperties.length === 0 && (
-                      <p className="text-xs text-slate-500 italic text-center py-2">
+                      <p className="text-xs text-zinc-500 italic text-center py-2">
                         Selecciona al menos una vivienda para configurar sus precios.
                       </p>
                     )}
@@ -430,19 +430,19 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                       const isExpanded = expandedPropertyId === prop.id;
 
                       return (
-                        <div key={prop.id} className="border border-slate-800 rounded-xl overflow-hidden">
+                        <div key={prop.id} className="border border-zinc-200 rounded-xl overflow-hidden">
                           <button
                             type="button"
                             onClick={() => setExpandedPropertyId(isExpanded ? null : prop.id)}
-                            className="w-full flex items-center justify-between p-3 bg-slate-950/40 hover:bg-slate-850/50 transition-all text-left"
+                            className="w-full flex items-center justify-between p-3 bg-zinc-50 hover:bg-zinc-100 transition-all text-left"
                           >
                             <div className="flex items-center gap-2">
                               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: prop.color }} />
-                              <span className="text-xs font-bold text-slate-200">{prop.name}</span>
-                              <span className="text-[10px] text-slate-500">({propRules.length} tramos)</span>
+                              <span className="text-xs font-bold text-zinc-800">{prop.name}</span>
+                              <span className="text-[10px] text-zinc-500">({propRules.length} tramos)</span>
                             </div>
                             <svg
-                              className={`w-4 h-4 text-slate-500 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                              className={`w-4 h-4 text-zinc-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -452,12 +452,12 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                           </button>
 
                           {isExpanded && (
-                            <div className="p-3 bg-slate-900/60 border-t border-slate-800 space-y-3">
+                            <div className="p-3 bg-white border-t border-zinc-200 space-y-3">
                               <div className="flex justify-end">
                                 <button
                                   type="button"
                                   onClick={() => addRule(prop.id)}
-                                  className="flex items-center gap-1.5 text-xs font-semibold text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+                                  className="flex items-center gap-1.5 text-xs font-semibold text-violet-600 hover:text-violet-700 transition-colors cursor-pointer"
                                 >
                                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
@@ -467,27 +467,27 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                               </div>
 
                               {propRules.length === 0 && (
-                                <p className="text-xs text-slate-600 italic text-center py-2">
+                                <p className="text-xs text-zinc-400 italic text-center py-2">
                                   {showSeasonPrices
                                     ? "Sin tramos. Se usarán los precios de temporada."
                                     : "Sin tramos configurados. Los días no mostrarán precio."}
                                 </p>
                               )}
 
-                              {propRules.map((rule, idx) => (
-                                <div key={rule.id} className="bg-slate-950/40 border border-slate-800 rounded-xl p-3 space-y-2.5">
+                              {propRules.map((rule) => (
+                                <div key={rule.id} className="bg-zinc-50 border border-zinc-200 rounded-xl p-3 space-y-2.5">
                                   <div className="flex items-center justify-between gap-2">
                                     <input
                                       type="text"
                                       value={rule.label}
                                       onChange={(e) => updateRule(rule.id, "label", e.target.value)}
-                                      placeholder={`Etiqueta (ej: Fin de semana)`}
-                                      className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                      placeholder="Etiqueta (ej: Fin de semana)"
+                                      className="flex-1 px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-800 placeholder-zinc-400 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
                                     />
                                     <button
                                       type="button"
                                       onClick={() => removeRule(rule.id)}
-                                      className="p-1.5 rounded-lg text-red-500/60 hover:text-red-400 hover:bg-red-950/30 transition-all cursor-pointer shrink-0"
+                                      className="p-1.5 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50 transition-all cursor-pointer shrink-0"
                                     >
                                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -497,26 +497,26 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
 
                                   <div className="grid grid-cols-2 gap-2">
                                     <div>
-                                      <label className="block text-[10px] text-slate-500 mb-1">Desde</label>
+                                      <label className="block text-[10px] text-zinc-500 mb-1">Desde</label>
                                       <DatePicker
                                         value={rule.startDate}
                                         onChange={(v) => updateRule(rule.id, "startDate", v)}
-                                        triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                        triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-800 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
                                       />
                                     </div>
                                     <div>
-                                      <label className="block text-[10px] text-slate-500 mb-1">Hasta</label>
+                                      <label className="block text-[10px] text-zinc-500 mb-1">Hasta</label>
                                       <DatePicker
                                         value={rule.endDate}
                                         onChange={(v) => updateRule(rule.id, "endDate", v)}
                                         min={rule.startDate}
-                                        triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                        triggerClassName="w-full flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-800 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
                                       />
                                     </div>
                                   </div>
 
                                   <div>
-                                    <label className="block text-[10px] text-slate-500 mb-1">Precio por noche (€)</label>
+                                    <label className="block text-[10px] text-zinc-500 mb-1">Precio por noche (€)</label>
                                     <div className="relative">
                                       <input
                                         type="number"
@@ -525,11 +525,11 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                                         placeholder="0"
                                         min="1"
                                         step="0.01"
-                                        className="w-full pl-7 pr-3 py-1.5 bg-slate-950 border border-slate-850 rounded-lg text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                        className="w-full pl-7 pr-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-800 placeholder-zinc-400 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
                                       />
-                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs">€</span>
+                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">€</span>
                                       {rule.pricePerNight && !isNaN(parseFloat(rule.pricePerNight)) && (
-                                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-500 text-[10px] font-semibold">
+                                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-600 text-[10px] font-semibold">
                                           {formatPrice(parseFloat(rule.pricePerNight))}/noche
                                         </span>
                                       )}
@@ -537,12 +537,12 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
                                   </div>
 
                                   <div>
-                                    <label className="block text-[10px] text-slate-500 mb-1.5">Días de la semana</label>
+                                    <label className="block text-[10px] text-zinc-500 mb-1.5">Días de la semana</label>
                                     <DowSelector
                                       value={rule.daysOfWeek}
                                       onChange={(v) => updateRule(rule.id, "daysOfWeek", v)}
                                     />
-                                    <p className="text-[10px] text-slate-600 mt-1">
+                                    <p className="text-[10px] text-zinc-400 mt-1">
                                       {rule.daysOfWeek.length === 0
                                         ? "Aplica todos los días"
                                         : `Aplica solo: ${rule.daysOfWeek.sort().map((d) => ["", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"][d]).join(", ")}`}
@@ -561,23 +561,23 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
             </div>
 
             {error && (
-              <div className="px-4 py-3 rounded-xl bg-red-950/40 border border-red-800/50 text-red-300 text-sm">
+              <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
                 {error}
               </div>
             )}
           </div>
 
           <div className="flex gap-3 justify-end p-6 pt-0 shrink-0">
-            <button type="button" onClick={onClose} className="px-4 py-2.5 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer">
+            <button type="button" onClick={onClose} className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer">
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="px-5 py-2.5 text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition-all disabled:opacity-40 disabled:pointer-events-none min-w-[110px] flex items-center justify-center cursor-pointer"
+              className="px-5 py-2.5 text-sm font-semibold bg-violet-600 hover:bg-violet-700 text-white rounded-xl transition-all disabled:opacity-40 disabled:pointer-events-none min-w-[110px] flex items-center justify-center cursor-pointer"
             >
               {isSaving ? (
-                <div className="w-4 h-4 border-2 border-violet-300 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
               ) : isEditing ? "Guardar cambios" : "Crear enlace"}
             </button>
           </div>

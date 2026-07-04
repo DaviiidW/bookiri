@@ -35,7 +35,7 @@ export default function PropertyFormModal({
   property,
 }: PropertyFormModalProps) {
   const [name, setName] = useState("");
-  
+
   const [color, setColor] = useState(PREDEFINED_COLORS[0].hex);
   const [isCustomColor, setIsCustomColor] = useState(false);
   const [showCustomSliders, setShowCustomSliders] = useState(false);
@@ -44,7 +44,7 @@ export default function PropertyFormModal({
   const [lightness, setLightness] = useState(50);
 
   const [maxGuests, setMaxGuests] = useState<number>(2);
-  
+
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,7 +61,8 @@ export default function PropertyFormModal({
 
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
-    let h = 0, s = 0, l = (max + min) / 2;
+    let h = 0, s = 0;
+    const l = (max + min) / 2;
 
     if (max !== min) {
       const d = max - min;
@@ -132,8 +133,8 @@ export default function PropertyFormModal({
     setIsLoading(true);
     setError(null);
 
-    const finalColor = isCustomColor 
-      ? `hsl(${hue}, ${saturation}%, ${lightness}%)` 
+    const finalColor = isCustomColor
+      ? `hsl(${hue}, ${saturation}%, ${lightness}%)`
       : color;
 
     if (!name.trim()) {
@@ -181,30 +182,30 @@ export default function PropertyFormModal({
   const getCustomColorPreview = () => `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
-        
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white border border-zinc-200 rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h3 className="text-xl font-bold text-white mb-6">
+        <h3 className="text-xl font-bold text-zinc-900 mb-6">
           {isEditMode ? "Editar Vivienda" : "Crear Nueva Vivienda"}
         </h3>
 
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-950/40 border border-red-800/50 text-red-200 text-xs text-center">
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs text-center">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          
+
           <div>
-            <label className="block text-xs font-semibold text-slate-450 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">
               Nombre de la Vivienda
             </label>
             <input
@@ -213,29 +214,29 @@ export default function PropertyFormModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej. Villa Paraíso, Apartamento Centro"
-              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-200 placeholder-slate-650 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+              className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
             />
           </div>
 
             <div>
-            <label className="block text-xs font-semibold text-slate-450 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">
               Capacidad Máxima de Huéspedes
             </label>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setMaxGuests((prev) => Math.max(1, prev - 1))}
-                className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-850 hover:bg-slate-850 hover:border-slate-800 text-slate-350 hover:text-white font-bold flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 select-none text-lg"
+                className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 hover:border-zinc-300 text-zinc-700 hover:text-zinc-900 font-bold flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 select-none text-lg"
               >
                 -
               </button>
-              <div className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-850 rounded-xl text-center text-slate-250 text-sm font-semibold select-none">
+              <div className="flex-1 px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-center text-zinc-800 text-sm font-semibold select-none">
                 {maxGuests}
               </div>
               <button
                 type="button"
                 onClick={() => setMaxGuests((prev) => prev + 1)}
-                className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-850 hover:bg-slate-850 hover:border-slate-800 text-slate-350 hover:text-white font-bold flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 select-none text-lg"
+                className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 hover:border-zinc-300 text-zinc-700 hover:text-zinc-900 font-bold flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-95 select-none text-lg"
               >
                 +
               </button>
@@ -243,10 +244,10 @@ export default function PropertyFormModal({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-450 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">
               Color Identificativo
             </label>
-            
+
             <div className="grid grid-cols-9 gap-2 mb-4">
               {PREDEFINED_COLORS.map((c) => (
                 <button
@@ -259,8 +260,8 @@ export default function PropertyFormModal({
                   }}
                   className={`w-full aspect-square rounded-full transition-transform cursor-pointer border ${
                     !isCustomColor && color.toLowerCase() === c.hex.toLowerCase()
-                      ? "scale-110 ring-2 ring-white border-transparent"
-                      : "border-slate-850 hover:scale-105"
+                      ? "scale-110 ring-2 ring-indigo-500 ring-offset-2 border-transparent"
+                      : "border-zinc-200 hover:scale-105"
                   }`}
                   style={{ backgroundColor: c.hex }}
                   title={c.name}
@@ -279,11 +280,11 @@ export default function PropertyFormModal({
                 }}
                 className={`w-full aspect-square rounded-full transition-transform cursor-pointer border relative overflow-hidden ${
                   isCustomColor
-                    ? "scale-110 ring-2 ring-white border-transparent"
-                    : "border-slate-850 hover:scale-105"
+                    ? "scale-110 ring-2 ring-indigo-500 ring-offset-2 border-transparent"
+                    : "border-zinc-200 hover:scale-105"
                 }`}
                 style={{
-                  background: isCustomColor 
+                  background: isCustomColor
                     ? getCustomColorPreview()
                     : "conic-gradient(from 0deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
                 }}
@@ -294,23 +295,23 @@ export default function PropertyFormModal({
             </div>
 
             {showCustomSliders && (
-              <div className="p-4 border border-slate-850 bg-slate-950/50 rounded-2xl space-y-4 animate-in fade-in duration-200">
+              <div className="p-4 border border-zinc-200 bg-zinc-50 rounded-2xl space-y-4 animate-in fade-in duration-200">
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-xl border border-white/10 flex-shrink-0 shadow-lg"
+                    className="w-12 h-12 rounded-xl border border-zinc-200 flex-shrink-0 shadow-sm"
                     style={{ backgroundColor: getCustomColorPreview() }}
                   />
                   <div className="text-xs">
-                    <p className="font-bold text-slate-200">Color Personalizado</p>
-                    <p className="font-mono text-[10px] text-slate-450 uppercase">{getCustomColorPreview()}</p>
+                    <p className="font-bold text-zinc-800">Color Personalizado</p>
+                    <p className="font-mono text-[10px] text-zinc-500 uppercase">{getCustomColorPreview()}</p>
                   </div>
                 </div>
 
-                <div className="space-y-3.5 pt-2 border-t border-slate-850/60">
+                <div className="space-y-3.5 pt-2 border-t border-zinc-200">
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-slate-450">
+                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                       <span>Tono</span>
-                      <span className="font-mono text-slate-350">{hue}°</span>
+                      <span className="font-mono text-zinc-700">{hue}°</span>
                     </div>
                     <input
                       type="range"
@@ -326,9 +327,9 @@ export default function PropertyFormModal({
                   </div>
 
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-slate-450">
+                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                       <span>Saturación</span>
-                      <span className="font-mono text-slate-350">{saturation}%</span>
+                      <span className="font-mono text-zinc-700">{saturation}%</span>
                     </div>
                     <input
                       type="range"
@@ -344,9 +345,9 @@ export default function PropertyFormModal({
                   </div>
 
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-slate-450">
+                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                       <span>Brillo</span>
-                      <span className="font-mono text-slate-350">{lightness}%</span>
+                      <span className="font-mono text-zinc-700">{lightness}%</span>
                     </div>
                     <input
                       type="range"
@@ -365,11 +366,11 @@ export default function PropertyFormModal({
             )}
           </div>
 
-          <div className="flex items-center gap-3 justify-end pt-4 border-t border-slate-850">
+          <div className="flex items-center gap-3 justify-end pt-4 border-t border-zinc-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-450 hover:text-slate-250 transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer"
               disabled={isLoading}
             >
               Cancelar
@@ -377,10 +378,10 @@ export default function PropertyFormModal({
             <button
               type="submit"
               disabled={isLoading}
-              className="px-5 py-2.5 text-xs font-semibold bg-indigo-650 hover:bg-indigo-550 text-white rounded-lg transition-colors cursor-pointer flex items-center justify-center min-w-[100px]"
+              className="px-5 py-2.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors cursor-pointer flex items-center justify-center min-w-[100px]"
             >
               {isLoading ? (
-                <div className="w-4 h-4 border-2 border-slate-300 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
               ) : isEditMode ? (
                 "Guardar"
               ) : (
