@@ -10,7 +10,7 @@ export default function CalendarioPage() {
   return (
     <div className="w-full text-zinc-800">
       <div className="mb-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-100">
+        <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900">
           Calendario
         </h1>
       </div>
