@@ -5,6 +5,7 @@ import { X, Loader2, ChevronRight, AlertTriangle, RefreshCw, DollarSign, Lock, C
 import { Season } from "./season-card";
 import { formatShortDate, getNights } from "@/app/dashboard/calendario/_types";
 import DatePicker from "@/components/date-picker";
+import SelectDropdown from "@/components/select-dropdown";
 
 interface Property {
   id: string;
@@ -341,17 +342,13 @@ export default function SeasonFormModal({
                 <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   Vivienda
                 </label>
-                <select
+                <SelectDropdown
+                  options={properties.map((p) => ({ value: p.id, label: p.name }))}
                   value={propertyId}
-                  onChange={(e) => setPropertyId(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 cursor-pointer"
-                  required
-                >
-                  <option value="" disabled>Selecciona una vivienda...</option>
-                  {properties.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
+                  onChange={setPropertyId}
+                  placeholder="Selecciona una vivienda..."
+                  triggerClassName="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
+                />
               </div>
 
               <div className="space-y-1.5">
