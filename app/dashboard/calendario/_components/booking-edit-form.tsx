@@ -4,6 +4,7 @@ import { Property } from "../_hooks/use-booking-form";
 import { Tramo } from "@/lib/price-calculator";
 import DatePicker from "@/components/date-picker";
 import SelectDropdown from "@/components/select-dropdown";
+import MoneyStepperInput from "@/components/money-stepper-input";
 
 interface BookingEditFormProps {
   state: {
@@ -343,20 +344,15 @@ export default function BookingEditForm({
                   Precio Total (€)
                 </label>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <input
+                  <MoneyStepperInput
                     id="totalPrice"
-                    type="number"
-                    min="0"
-                    step="10"
                     value={state.totalPrice}
+                    onChange={actions.setTotalPrice}
                     disabled={state.isReadOnly}
-                    onChange={(e) => {
-                      actions.setTotalPrice(e.target.value);
-                    }}
-                    className="w-full min-w-0 bg-transparent text-lg font-extrabold text-zinc-850 focus:outline-none disabled:text-zinc-400"
                     required
+                    inputClassName="w-full min-w-0 bg-transparent text-lg font-extrabold text-zinc-850 focus:outline-none disabled:text-zinc-400"
+                    suffix={<span className="text-lg font-extrabold text-zinc-850">€</span>}
                   />
-                  <span className="text-lg font-extrabold text-zinc-850">€</span>
                 </div>
               </div>
             </div>
@@ -379,18 +375,15 @@ export default function BookingEditForm({
                 Importe de la Señal
               </label>
               <div className="flex items-baseline gap-1 mt-1">
-                <input
+                <MoneyStepperInput
                   id="depositAmount"
-                  type="number"
-                  min="0"
-                  step="10"
                   value={state.depositAmount}
+                  onChange={actions.setDepositAmount}
                   disabled={state.isReadOnly}
-                  onChange={(e) => actions.setDepositAmount(e.target.value)}
-                  className="w-full min-w-0 bg-transparent text-lg font-extrabold text-zinc-850 focus:outline-none disabled:text-zinc-400"
                   required
+                  inputClassName="w-full min-w-0 bg-transparent text-lg font-extrabold text-zinc-850 focus:outline-none disabled:text-zinc-400"
+                  suffix={<span className="text-lg font-extrabold text-zinc-850">€</span>}
                 />
-                <span className="text-lg font-extrabold text-zinc-850">€</span>
               </div>
             </div>
 

@@ -6,6 +6,7 @@ import { Season } from "./season-card";
 import { formatShortDate, getNights } from "@/lib/date-format";
 import DatePicker from "@/components/date-picker";
 import SelectDropdown from "@/components/select-dropdown";
+import MoneyStepperInput from "@/components/money-stepper-input";
 
 interface Property {
   id: string;
@@ -517,16 +518,15 @@ export default function SeasonFormModal({
                   <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                     Precio por noche (€)
                   </label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="10"
-                    value={pricePerNight}
-                    onChange={(e) => setPricePerNight(e.target.value)}
-                    placeholder="0.00"
-                    className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
-                    required
-                  />
+                  <div className="flex items-center pl-4 pr-2 py-1 bg-zinc-50 border border-zinc-200 rounded-xl focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500">
+                    <MoneyStepperInput
+                      value={pricePerNight}
+                      onChange={setPricePerNight}
+                      placeholder="0.00"
+                      required
+                      inputClassName="w-full py-1.5 bg-transparent text-zinc-800 text-sm placeholder-zinc-400 focus:outline-none"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-1.5">
                   <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider">
@@ -640,17 +640,14 @@ export default function SeasonFormModal({
                       </div>
 
                       {ba?.action === "manual" && (
-                        <input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder="Nuevo precio total (€)"
-                          value={ba.manualPrice ?? ""}
-                          onChange={(e) =>
-                            updateBookingAction(booking.id, { manualPrice: parseFloat(e.target.value) })
-                          }
-                          className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-zinc-800 text-xs placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        />
+                        <div className="flex items-center pl-3 pr-1.5 py-0.5 bg-white border border-zinc-200 rounded-lg focus-within:ring-1 focus-within:ring-indigo-500">
+                          <MoneyStepperInput
+                            value={ba.manualPrice != null ? String(ba.manualPrice) : ""}
+                            onChange={(v) => updateBookingAction(booking.id, { manualPrice: parseFloat(v) })}
+                            placeholder="Nuevo precio total (€)"
+                            inputClassName="w-full py-1.5 bg-transparent text-zinc-800 text-xs placeholder-zinc-400 focus:outline-none"
+                          />
+                        </div>
                       )}
                     </div>
                   );

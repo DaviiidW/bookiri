@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { SharedCalendar, SharedCalendarPriceRule } from "./shared-calendars-shell";
 import DatePicker from "@/components/date-picker";
+import MoneyStepperInput from "@/components/money-stepper-input";
 
 interface Property {
   id: string;
@@ -517,23 +518,21 @@ export default function SharedCalendarFormModal({ calendar, onClose, onSave }: P
 
                                   <div>
                                     <label className="block text-[10px] text-zinc-500 mb-1">Precio por noche (€)</label>
-                                    <div className="relative">
-                                      <input
-                                        type="number"
+                                    <div className="flex items-center pl-2.5 pr-1.5 py-0.5 bg-white border border-zinc-200 rounded-lg focus-within:ring-1 focus-within:ring-violet-500/50">
+                                      <span className="text-zinc-400 text-xs shrink-0">€</span>
+                                      <MoneyStepperInput
                                         value={rule.pricePerNight}
-                                        onChange={(e) => updateRule(rule.id, "pricePerNight", e.target.value)}
+                                        onChange={(v) => updateRule(rule.id, "pricePerNight", v)}
+                                        min={1}
                                         placeholder="0"
-                                        min="1"
-                                        step="0.01"
-                                        className="w-full pl-7 pr-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-800 placeholder-zinc-400 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                                        inputClassName="w-full pl-1 py-1.5 bg-transparent text-zinc-800 placeholder-zinc-400 text-xs focus:outline-none"
                                       />
-                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">€</span>
-                                      {rule.pricePerNight && !isNaN(parseFloat(rule.pricePerNight)) && (
-                                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-600 text-[10px] font-semibold">
-                                          {formatPrice(parseFloat(rule.pricePerNight))}/noche
-                                        </span>
-                                      )}
                                     </div>
+                                    {rule.pricePerNight && !isNaN(parseFloat(rule.pricePerNight)) && (
+                                      <p className="mt-1 text-[10px] text-emerald-600 font-semibold">
+                                        {formatPrice(parseFloat(rule.pricePerNight))}/noche
+                                      </p>
+                                    )}
                                   </div>
 
                                   <div>
