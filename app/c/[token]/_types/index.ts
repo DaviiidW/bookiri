@@ -79,7 +79,7 @@ export function getDayStatus(date: Date, property: PublicProperty): DayStatus {
   const isOccupied = property.occupiedRanges.some((r) => {
     const start = toMidnightMs(new Date(r.checkInDate));
     const end = toMidnightMs(new Date(r.checkOutDate));
-    return dayMs >= start && dayMs < end;
+    return dayMs >= start && dayMs <= end;
   });
 
   return isOccupied ? "occupied" : "available";
