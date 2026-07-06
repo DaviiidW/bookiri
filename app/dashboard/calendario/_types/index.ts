@@ -50,6 +50,17 @@ export function getBookingsForDay(date: Date, bookings: CalendarBooking[]): Cale
   });
 }
 
+export type BookingDayType = "checkin" | "checkout" | "middle";
+
+export function getBookingDayType(date: Date, booking: CalendarBooking): BookingDayType {
+  const dayMs = toMidnightMs(date);
+  const checkIn = toMidnightMs(new Date(booking.checkInDate));
+  const checkOut = toMidnightMs(new Date(booking.checkOutDate));
+  if (dayMs === checkIn) return "checkin";
+  if (dayMs === checkOut) return "checkout";
+  return "middle";
+}
+
 export function getDaysInMonth(year: number, month: number): Date[] {
   const days: Date[] = [];
   const date = new Date(year, month, 1);

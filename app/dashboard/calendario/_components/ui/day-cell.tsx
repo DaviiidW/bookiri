@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarBooking, CalendarAvailabilityPeriod, getBookingsForDay, isDayAvailable } from "../../_types";
+import { CalendarBooking, CalendarAvailabilityPeriod, getBookingsForDay, getBookingDayType, isDayAvailable } from "../../_types";
 import BookingChip from "./booking-chip";
 
 interface DayCellProps {
@@ -39,6 +39,7 @@ export default function DayCell({
 
   let bgClass = "bg-zinc-50/50";
   if (!available) bgClass = "bg-zinc-100";
+  if (available) bgClass = "bg-emerald-50";
   if (hasBookings) bgClass = "bg-white";
   if (!isCurrentMonth) bgClass = "bg-transparent";
 
@@ -66,10 +67,10 @@ export default function DayCell({
           {date.getDate()}
         </span>
 
-        {isCurrentMonth && !hasBookings && (
+        {isCurrentMonth && !hasBookings && !available && (
           <span
-            className={`w-1.5 h-1.5 rounded-full ${available ? "bg-emerald-500/60" : "bg-zinc-300"}`}
-            title={available ? "Disponible" : "No disponible"}
+            className="w-1.5 h-1.5 rounded-full bg-zinc-300"
+            title="No disponible"
           />
         )}
       </div>
@@ -79,7 +80,13 @@ export default function DayCell({
           {isCompact ? (
             <div className="flex flex-wrap gap-0.5">
               {bookings.slice(0, 3).map((b) => (
-                <BookingChip key={b.id} booking={b} compact onClick={() => onSelectBooking?.(b)} />
+                <BookingChip
+                  key={b.id}
+                  booking={b}
+                  compact
+                  dayType={getBookingDayType(date, b)}
+                  onClick={() => onSelectBooking?.(b)}
+                />
               ))}
               {bookings.length > 3 && (
                 <span className="text-[9px] text-zinc-400">+{bookings.length - 3}</span>

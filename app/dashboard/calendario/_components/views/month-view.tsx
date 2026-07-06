@@ -8,6 +8,7 @@ import {
   getDaysInMonth,
   formatMonthLabel,
 } from "../../_types";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import DayCell from "../ui/day-cell";
 
 interface MonthViewProps {
@@ -101,7 +102,6 @@ export default function MonthView({ currentDate, properties, onSelectBooking, se
                 isCurrentMonth={isCurrentMonth}
                 allBookings={allBookings}
                 allPeriods={allPeriods}
-                onSelectBooking={onSelectBooking}
                 isSelected={isSel}
                 onSelectDate={onSelectDate}
                 isCompact
@@ -119,6 +119,18 @@ export default function MonthView({ currentDate, properties, onSelectBooking, se
         <div className="flex items-center gap-1.5 text-[10px] text-zinc-550">
           <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
           No disponible
+        </div>
+        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 sm:hidden">
+          <span className="w-3 h-3 rounded-full bg-zinc-400 flex items-center justify-center">
+            <ArrowDownRight size={9} strokeWidth={3} className="text-white" />
+          </span>
+          Entra (check-in)
+        </div>
+        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 sm:hidden">
+          <span className="w-3 h-3 rounded-full bg-zinc-400 flex items-center justify-center">
+            <ArrowUpRight size={9} strokeWidth={3} className="text-white" />
+          </span>
+          Sale (check-out)
         </div>
         {properties.map((p) => (
           <div key={p.id} className="flex items-center gap-1.5 text-[10px] text-zinc-550">
